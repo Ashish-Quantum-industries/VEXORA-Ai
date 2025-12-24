@@ -11,115 +11,91 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Plus+Jakarta+Sans:wght@300;500;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Plus+Jakarta+Sans:wght@200;500;800&display=swap');
         
         :root { --q-cyan: #00f2ff; --q-purple: #7000ff; }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
         
-        body { 
-            background: #000; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; 
-            overflow-x: hidden; width: 100vw; height: 100vh;
-        }
+        body { background: #000; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; width: 100vw; height: 100vh; }
+        .heading-font { font-family: 'Orbitron', sans-serif; font-weight: 900; }
 
-        .heading-font { font-family: 'Syncopate', sans-serif; }
-
-        /* Background Nebula */
-        .nebula { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 50%, #0a0a0a 0%, #000 100%); }
-
-        /* Dynamic Glow Trace */
+        /* Snappy Flare Effect */
         .q-flare {
-            position: fixed; width: 150px; height: 150px;
+            position: fixed; width: 120px; height: 120px;
             background: radial-gradient(circle, var(--f-color, #00f2ff) 0%, transparent 70%);
             border-radius: 50%; pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s;
+            transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.2s;
         }
 
-        .glass {
-            background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px;
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.05); }
+
+        /* Scrollable Area Fix */
+        .scroll-area { height: calc(100vh - 80px); overflow-y: auto; padding-top: 100px; padding-bottom: 50px; }
+        .scroll-area::-webkit-scrollbar { width: 3px; }
+        .scroll-area::-webkit-scrollbar-thumb { background: var(--q-cyan); }
+
+        /* Tool Cards */
+        .q-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; max-width: 1300px; margin: 0 auto; padding: 20px; }
+        @media (min-width: 1024px) { .q-grid { grid-template-columns: repeat(5, 1fr); gap: 20px; } }
+
+        .module-card { padding: 30px 10px; text-align: center; border-radius: 15px; cursor: pointer; transition: 0.3s cubic-bezier(0.19, 1, 0.22, 1); }
+        .module-card:hover { transform: translateY(-10px); background: rgba(255,255,255,0.05); border-color: var(--q-cyan); box-shadow: 0 0 30px rgba(0,242,255,0.1); }
+
+        /* Sub-Dashboard Layers */
+        .sub-dashboard {
+            position: fixed; inset: 0; z-index: 4000; background: #000;
+            display: none; flex-direction: column; overflow: hidden;
         }
 
-        /* Navigation */
-        nav { border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.8); }
-
-        /* Layout Fixes */
-        .view-container { width: 100%; min-height: 100vh; padding-top: 100px; display: flex; flex-direction: column; align-items: center; }
-        
-        /* Grid Mastery */
-        .q-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; max-width: 1400px; padding: 20px;
-        }
-        @media (min-width: 1024px) { .q-grid { grid-template-columns: repeat(5, 1fr); gap: 25px; } }
-
-        .module-card {
-            padding: 30px 15px; text-align: center; border-radius: 25px; cursor: pointer;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .module-card:hover { transform: translateY(-10px); background: rgba(255,255,255,0.05); border-color: var(--q-cyan); }
-
-        /* Auth Modal */
-        #auth-modal {
-            position: fixed; inset: 0; z-index: 5000; background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; padding: 20px;
-        }
-
-        /* Workspace Sub-Dashboard */
-        #workspace {
-            position: fixed; inset: 0; z-index: 4000; background: #000; display: none;
-            flex-direction: column; padding: 40px 20px; overflow-y: auto;
-        }
-
-        .btn-q {
-            background: #fff; color: #000; font-weight: 800; padding: 15px 30px; border-radius: 12px;
-            text-transform: uppercase; font-size: 12px; cursor: pointer; transition: 0.3s;
-        }
+        .btn-q { background: #fff; color: #000; font-weight: 800; padding: 12px 24px; border-radius: 8px; text-transform: uppercase; font-size: 10px; letter-spacing: 2px; cursor: pointer; transition: 0.3s; }
         .btn-q:hover { background: var(--q-cyan); box-shadow: 0 0 30px var(--q-cyan); }
 
-        /* Footer */
-        footer { width: 100%; padding: 60px 20px; background: #050505; border-top: 1px solid rgba(255,255,255,0.05); margin-top: auto; }
-
-        input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 18px; border-radius: 12px; color: #fff; outline: none; margin-bottom: 20px; }
+        /* Auth Modal */
+        #auth-modal { position: fixed; inset: 0; z-index: 5000; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; padding: 20px; }
+        
+        input, select, textarea { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 16px; border-radius: 12px; color: #fff; margin-bottom: 15px; }
     </style>
 </head>
 <body onmousedown="startFlare(event)" onmouseup="stopFlare()" ontouchstart="startFlare(event)" ontouchend="stopFlare()">
 
     <div class="q-flare" id="flare"></div>
-    <div class="nebula"></div>
 
-    <!-- NAVBAR -->
-    <nav class="fixed top-0 w-full z-[1000] p-5 px-10 flex justify-between items-center backdrop-blur-xl">
+    <!-- TOP NAVIGATION -->
+    <nav class="fixed top-0 w-full z-[1000] p-6 px-10 flex justify-between items-center glass border-x-0 border-t-0 rounded-none">
         <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
-            <svg width="25" height="25" viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" fill="none" stroke="#00f2ff" stroke-width="10"/></svg>
+            <svg width="25" height="25" viewBox="0 0 100 100"><polygon points="50,5 95,25 95,75 50,95 5,75 5,25" fill="none" stroke="#00f2ff" stroke-width="10"/></svg>
             <span class="heading-font text-xl tracking-tighter uppercase">VEXORA</span>
         </div>
-        <button onclick="openAuth()" class="btn-q !py-2 !px-6 !text-[10px]">Login</button>
+        <div class="flex items-center gap-6">
+            <div id="credits" class="text-[9px] font-bold text-cyan-400 tracking-[3px] hidden md:block">SESSIONS: 5/5</div>
+            <button id="login-btn" onclick="openAuth()" class="btn-q">Login</button>
+        </div>
     </nav>
 
-    <!-- DASHBOARD VIEW -->
-    <div id="main-hub" class="view-container">
-        <header class="w-full max-w-7xl flex flex-col md:flex-row justify-between items-center mb-10 px-6 gap-6">
-            <div class="text-center md:text-left">
-                <h1 class="heading-font text-2xl italic">NEURAL_HUB_V4</h1>
-                <p class="text-[9px] tracking-[5px] text-cyan-400 mt-1 font-bold uppercase">Ashish Quantum Industries</p>
-            </div>
-            <div id="credits" class="glass px-6 py-2 text-cyan-400 font-bold border-cyan-400/30 text-[10px] uppercase">Credits: 5/5</div>
-        </header>
-
-        <div class="q-grid" id="module-grid">
-            <!-- 21 Modules -->
+    <!-- MAIN HUB DASHBOARD -->
+    <div id="main-hub" class="scroll-area">
+        <div class="text-center mb-16 px-6">
+            <h1 class="heading-font text-4xl lg:text-7xl mb-4">SINGULARITY_HUB</h1>
+            <p class="text-gray-500 text-[10px] tracking-[8px] uppercase">Ashish Quantum Industries // The Final AI Interface</p>
         </div>
 
+        <div class="q-grid" id="module-grid">
+            <!-- 21 Modules Generated by JS -->
+        </div>
+
+        <!-- INSTITUTIONAL FOOTER -->
         <footer>
-            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 text-center md:text-left">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 text-center md:text-left px-10">
                 <div class="md:col-span-2">
                     <h2 class="heading-font text-lg mb-4">ASHISH QUANTUM INDUSTRIES</h2>
-                    <p class="text-gray-600 text-[10px] tracking-widest leading-loose">The Sovereign AI Interface. Engineering the next era of sentient technology.</p>
+                    <p class="text-gray-600 text-xs tracking-widest leading-loose">Engineering superior neural intelligence tools for the next decade of human evolution. VEXORA Core v5.0 Active.</p>
                 </div>
                 <div>
-                    <h4 class="text-[9px] font-bold text-gray-400 tracking-[5px] uppercase mb-4">Science</h4>
+                    <h4 class="text-[9px] font-bold text-white tracking-[5px] uppercase mb-4">Company</h4>
                     <ul class="text-gray-600 text-[9px] space-y-3 uppercase tracking-widest">
-                        <li>Security Nodes</li>
-                        <li>Neural Cloud</li>
+                        <li>Legal & Ethics</li>
+                        <li>Security Audit</li>
+                        <li>Whitepaper 2.0</li>
                     </ul>
                 </div>
                 <div class="text-[9px] text-gray-700 tracking-[5px] flex items-end">© 2025 ALL RIGHTS RESERVED</div>
@@ -127,130 +103,157 @@
         </footer>
     </div>
 
-    <!-- AUTH PORTAL MODAL -->
+    <!-- AUTH PORTAL -->
     <div id="auth-modal">
         <div class="glass p-12 w-full max-w-lg border-white/10 relative">
-            <button onclick="closeAuth()" class="absolute top-6 right-6 text-gray-500"><i class="fas fa-times"></i></button>
-            <div id="auth-content">
+            <button onclick="closeAuth()" class="absolute top-6 right-6 text-gray-500 text-2xl">&times;</button>
+            <div id="auth-box">
                 <h2 class="heading-font text-2xl text-center mb-10 tracking-widest">IDENTIFY</h2>
-                <input type="email" id="email" placeholder="NEURAL ADDRESS">
-                <input type="password" id="pass" placeholder="ACCESS KEY">
-                <button onclick="login()" class="btn-q w-full">Establishing Link</button>
-                <div class="flex justify-between mt-10 text-[9px] font-bold text-gray-500 tracking-widest uppercase">
-                    <span class="hover:text-cyan-400 cursor-pointer">Forgot Key?</span>
-                    <span class="hover:text-cyan-400 cursor-pointer">New Identity</span>
+                <div id="auth-form">
+                    <input type="email" id="email" placeholder="NEURAL_ADDRESS">
+                    <input type="password" id="pass" placeholder="ACCESS_KEY">
+                    <button onclick="login()" class="btn-q w-full py-4 text-sm">Synchronize Core</button>
+                    <div class="flex justify-between mt-10 text-[9px] font-bold text-gray-500 tracking-widest uppercase px-2">
+                        <span class="hover:text-cyan-400 cursor-pointer">Forget Key?</span>
+                        <span class="hover:text-cyan-400 cursor-pointer">Register Identity</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODULE WORKSPACE (Sub-Dashboard) -->
-    <div id="workspace">
-        <div class="flex justify-between items-center mb-12">
-            <button onclick="closeWorkspace()" class="text-[10px] font-bold tracking-[4px] text-gray-500 uppercase"><i class="fas fa-arrow-left"></i> Hub</button>
-            <h2 id="ws-title" class="heading-font text-cyan-400 text-lg"></h2>
-        </div>
-        <div class="flex-1 flex flex-col items-center justify-center glass p-10 border-white/5">
-            <div id="ws-icon" class="text-7xl text-white/5 mb-10"></div>
-            <p id="ws-desc" class="text-gray-500 text-xs tracking-widest uppercase text-center mb-10 max-w-md"></p>
-            <div class="w-full max-w-sm space-y-4">
-                <button class="glass w-full py-10 border-dashed border-white/10 uppercase text-[10px] tracking-[5px] font-bold">Upload Source</button>
-                <button onclick="exec()" class="btn-q w-full">Execute Node</button>
+    <!-- DYNAMIC TOOL WORKSPACE (SUB-DASHBOARD) -->
+    <div id="sub-dashboard" class="sub-dashboard">
+        <nav class="p-6 border-b border-white/5 flex justify-between items-center bg-black">
+            <button onclick="closeTool()" class="text-[10px] font-bold tracking-[5px] text-gray-500 uppercase hover:text-white transition"><i class="fas fa-arrow-left"></i> Hub</button>
+            <div id="tool-title" class="heading-font text-cyan-400 text-lg"></div>
+            <div class="w-10 h-10 glass rounded flex items-center justify-center"><i class="fas fa-cog"></i></div>
+        </nav>
+        
+        <div class="flex-1 overflow-y-auto p-10 flex flex-col items-center">
+            <div id="tool-interface" class="w-full max-w-4xl glass p-10 min-h-[60vh] border-white/10 rounded-[40px]">
+                <!-- Specific UI for each tool will be here -->
             </div>
         </div>
     </div>
 
-    <!-- PAYMENT MODAL -->
-    <div id="pay-modal" class="fixed inset-0 z-[6000] bg-black/95 flex items-center justify-center hidden">
-        <div class="glass p-12 max-w-md w-full text-center border-cyan-400">
+    <!-- PAYMENT GATEWAY -->
+    <div id="pay-modal" class="fixed inset-0 z-[6000] bg-black flex items-center justify-center hidden">
+        <div class="glass p-12 max-w-md w-full text-center border-cyan-500 shadow-[0_0_50px_rgba(0,242,255,0.2)]">
             <i class="fas fa-crown text-5xl text-cyan-400 mb-8"></i>
-            <h2 class="heading-font text-xl mb-4">LIMIT REACHED</h2>
-            <p class="text-gray-500 text-[10px] tracking-[4px] uppercase mb-10">Activate Institutional Access for unlimited Quantum sessions.</p>
-            <button class="btn-q w-full" onclick="location.reload()">Activate ($49/mo)</button>
+            <h2 class="heading-font text-xl mb-4 uppercase">Institutional Activation Required</h2>
+            <p class="text-gray-500 text-[10px] tracking-[4px] uppercase mb-12">Your free neural syncs have expired. Unlock VEXORA full-access via Ashish Quantum billing.</p>
+            <button class="btn-q w-full text-sm py-4" onclick="location.reload()">ACTIVATE FOR $49 / MO</button>
         </div>
     </div>
 
     <script>
-        let isLoggedIn = false;
+        let loggedIn = false;
         let credits = 5;
         const colors = ['#00f2ff', '#7000ff', '#ff00c1', '#00ff41', '#ffff00'];
 
-        // DYNAMIC FLARE
         function startFlare(e) {
-            const flare = document.getElementById('flare');
+            const f = document.getElementById('flare');
             const x = e.clientX || (e.touches ? e.touches[0].clientX : 0);
             const y = e.clientY || (e.touches ? e.touches[0].clientY : 0);
-            const color = colors[Math.floor(Math.random()*colors.length)];
-            flare.style.setProperty('--f-color', color);
-            flare.style.left = x + 'px';
-            flare.style.top = y + 'px';
-            flare.style.opacity = '0.8';
+            f.style.setProperty('--f-color', colors[Math.floor(Math.random()*colors.length)]);
+            f.style.left = x + 'px'; f.style.top = y + 'px'; f.style.opacity = '0.8';
         }
         function stopFlare() { document.getElementById('flare').style.opacity = '0'; }
 
-        // AUTH CONTROL
         function openAuth() { document.getElementById('auth-modal').style.display = 'flex'; }
         function closeAuth() { document.getElementById('auth-modal').style.display = 'none'; }
-        function login() {
-            if(document.getElementById('email').value && document.getElementById('pass').value) {
-                isLoggedIn = true;
-                closeAuth();
-                alert("Identity Verified. VEXORA Nodes Synchronized.");
-            }
+        function login() { 
+            loggedIn = true; 
+            closeAuth(); 
+            document.getElementById('login-btn').innerText = "VEX-001";
+            alert("VEXORA Intelligence: Connection established."); 
         }
 
-        // WORKSPACE CONTROL
-        function openModule(i) {
-            if(!isLoggedIn) { openAuth(); return; }
-            if(credits <= 0) { document.getElementById('pay-modal').classList.remove('hidden'); return; }
-            
-            const tool = mData[i];
-            document.getElementById('ws-title').innerText = tool.n.toUpperCase();
-            document.getElementById('ws-icon').innerHTML = `<i class="fas fa-${tool.i}"></i>`;
-            document.getElementById('ws-desc').innerText = tool.d;
-            document.getElementById('workspace').style.display = 'flex';
-        }
-        function closeWorkspace() { document.getElementById('workspace').style.display = 'none'; }
-        function exec() {
-            credits--;
-            document.getElementById('credits').innerText = `Credits: ${credits}/5`;
-            alert("VEXORA Intelligence: Executing Neural Command...");
-            if(credits <= 0) { closeWorkspace(); document.getElementById('pay-modal').classList.remove('hidden'); }
-        }
-
-        const mData = [
-            {n:'AI Style Transfer', i:'magic-wand-sparkles', d:'Transform raw video into Neural Art.'},
-            {n:'Movie Gen', i:'video', d:'Text-to-Cinematic 8K rendering.'},
-            {n:'Auto-Coder', i:'code', d:'Autonomous Software Architecture.'},
-            {n:'Sales Engine', i:'chart-line', d:'Automated Global Wealth Generation.'},
-            {n:'Health AI', i:'heartbeat', d:'Molecular Biological Diagnostics.'},
-            {n:'Digital Twin', i:'dna', d:'Consciousness Replication.'},
-            {n:'Dream Link', i:'moon', d:'Neural thought-stream analysis.'},
-            {n:'Voice Clone', i:'microphone', d:'Indistinguishable Voice Synthesis.'},
-            {n:'IoT Master', i:'network-wired', d:'Decentralized hardware control.'},
-            {n:'Legal AI', i:'scale-balanced', d:'Autonomous legal logic.'},
-            {n:'Skill Gen', i:'graduation-cap', d:'Instant cognitive Skill-Sync.'},
-            {n:'Animal Speak', i:'paw', d:'Interspecies neural translation.'},
-            {n:'Energy Grid', i:'bolt', d:'Quantum power optimization.'},
-            {n:'Life Path', i:'eye', d:'Predictive event modeling.'},
-            {n:'Scam Shield', i:'user-secret', d:'Neural fraud detection.'},
-            {n:'Ethics Eng', i:'brain', d:'Artificial alignment logic.'},
-            {n:'Soul Backup', i:'ghost', d:'Infinite memory storage.'},
-            {n:'Cyber Shield', i:'shield-halved', d:'God-mode security.'},
-            {n:'Market AI', i:'arrow-trend-up', d:'Wealth prediction algorithms.'},
-            {n:'3D Architect', i:'cube', d:'Thought-to-Geometry engine.'},
-            {n:'Neural Sync', i:'link', d:'Global Hive-mind connection.'}
+        // TOOL DATA & UNIQUE INTERFACES
+        const tools = [
+            {n:'AI Style Transfer', i:'magic-wand-sparkles', ui: `
+                <h3 class="heading-font text-xl mb-6">Neural Style Processor</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="border-2 border-dashed border-white/10 p-20 rounded-3xl text-center">
+                        <i class="fas fa-file-video text-4xl mb-4 opacity-30"></i><br>
+                        <span class="text-[10px] font-bold uppercase tracking-[5px]">Upload Source Video</span>
+                    </div>
+                    <div class="space-y-6">
+                        <p class="text-[10px] font-black tracking-[4px] text-gray-500">SELECT AI STYLE</p>
+                        <select class="q-input"><option>Cyberpunk 2077</option><option>Van Gogh Oil</option><option>Pixar Animation</option><option>Realistic 8K</option></select>
+                        <p class="text-[10px] font-black tracking-[4px] text-gray-500">STRENGTH</p>
+                        <input type="range" class="w-full">
+                        <button onclick="runTool()" class="btn-q w-full py-5 text-sm">Initiate Transfer</button>
+                    </div>
+                </div>
+            `},
+            {n:'Auto-Coder', i:'code', ui: `
+                <h3 class="heading-font text-xl mb-6">Autonomous Software Lab</h3>
+                <div class="w-full space-y-6">
+                    <textarea class="h-40" placeholder="Describe the software you need (e.g. 'Build a real-time trading app for crypto')"></textarea>
+                    <div class="grid grid-cols-2 gap-4">
+                        <select><option>Python (FastAPI)</option><option>Node.js</option><option>Rust</option></select>
+                        <select><option>AWS Deployment</option><option>Vercel Hub</option></select>
+                    </div>
+                    <div class="bg-black/50 p-6 rounded-2xl border border-white/10 font-mono text-green-500 text-xs">
+                        > VEXORA-CODER initializing...<br>> Awaiting prompt instructions...
+                    </div>
+                    <button onclick="runTool()" class="btn-q w-full">Deploy Full App</button>
+                </div>
+            `},
+            {n:'Sales Machine', i:'chart-line', ui: `
+                <h3 class="heading-font text-xl mb-6">Global Wealth Automator</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div class="glass p-6 rounded-2xl text-center"><p class="text-[9px] text-gray-500 uppercase">Leads Captured</p><h4 class="text-2xl font-bold">0</h4></div>
+                    <div class="glass p-6 rounded-2xl text-center"><p class="text-[9px] text-gray-500 uppercase">Conversion AI</p><h4 class="text-2xl font-bold text-green-400">98%</h4></div>
+                    <div class="glass p-6 rounded-2xl text-center"><p class="text-[9px] text-gray-500 uppercase">Active Bots</p><h4 class="text-2xl font-bold">12</h4></div>
+                </div>
+                <button onclick="runTool()" class="btn-q w-full py-5">Launch Sales Campaign</button>
+            `},
+            // Generative UI for other tools
+            {n:'Movie Gen', i:'video'}, {n:'Health AI', i:'heartbeat'}, {n:'Digital Twin', i:'dna'}, 
+            {n:'Dream Link', i:'moon'}, {n:'Voice Clone', i:'microphone'}, {n:'IoT Master', i:'network-wired'},
+            {n:'Legal AI', i:'scale-balanced'}, {n:'Skill Gen', i:'graduation-cap'}, {n:'Animal Speak', i:'paw'},
+            {n:'Energy Grid', i:'bolt'}, {n:'Life Path', i:'eye'}, {n:'Scam Shield', i:'user-secret'},
+            {n:'Ethics Eng', i:'brain'}, {n:'Soul Backup', i:'ghost'}, {n:'Cyber Shield', i:'shield-halved'},
+            {n:'Market AI', i:'arrow-trend-up'}, {n:'3D Architect', i:'cube'}, {n:'Neural Sync', i:'link'}
         ];
 
         const grid = document.getElementById('module-grid');
-        mData.forEach((x, i) => {
+        tools.forEach((t, i) => {
             grid.innerHTML += `
-                <div class="module-card glass" onclick="openModule(${i})">
-                    <i class="fas fa-${x.i} text-2xl text-gray-500 mb-6"></i>
-                    <p class="text-[9px] font-bold tracking-[3px] uppercase text-gray-500">${x.n}</p>
+                <div class="module-card glass" onclick="openTool(${i})">
+                    <i class="fas fa-${t.i} text-3xl text-gray-600 mb-6 transition"></i>
+                    <p class="text-[9px] font-bold tracking-[3px] uppercase text-gray-500">${t.n}</p>
                 </div>
             `;
         });
+
+        function openTool(i) {
+            if(!loggedIn) { openAuth(); return; }
+            if(credits <= 0) { document.getElementById('pay-modal').classList.remove('hidden'); return; }
+            
+            const t = tools[i];
+            document.getElementById('tool-title').innerText = t.n.toUpperCase();
+            document.getElementById('tool-interface').innerHTML = t.ui || `
+                <div class="text-center py-20">
+                    <i class="fas fa-${t.i} text-6xl text-cyan-400 mb-10 opacity-20"></i>
+                    <h3 class="heading-font text-2xl mb-4">${t.n}</h3>
+                    <p class="text-gray-500 text-xs tracking-widest mb-12 uppercase">Initializing specific workspace for ${t.n}...</p>
+                    <button onclick="runTool()" class="btn-q px-20">Execute Action</button>
+                </div>
+            `;
+            document.getElementById('sub-dashboard').style.display = 'flex';
+        }
+
+        function closeTool() { document.getElementById('sub-dashboard').style.display = 'none'; }
+        function runTool() {
+            credits--;
+            document.getElementById('credits').innerText = `SESSIONS: ${credits}/5`;
+            alert("VEXORA Node Status: Successfully processed command via Ashish Quantum Industries Cloud.");
+            if(credits <= 0) { closeTool(); document.getElementById('pay-modal').classList.remove('hidden'); }
+        }
     </script>
 </body>
 </html>
