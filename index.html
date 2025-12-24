@@ -4,231 +4,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VEXORA | Ashish Quantum Industries | Neural OS</title>
+    <title>VEXORA | Ashish Quantum Industries | The Sovereign AI</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Space+Grotesk:wght@300;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@300;700&display=swap');
         
-        :root { --q-cyan: #00f2ff; --q-purple: #7000ff; --q-red: #ff003c; }
-        
+        :root { --accent: #00f2ff; --bg: #030303; }
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { background: #000; color: #fff; font-family: 'Space Grotesk', sans-serif; overflow-x: hidden; width: 100vw; }
-        .heading-font { font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 2px; }
+        
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .heading-font { font-family: 'Space Grotesk', sans-serif; font-weight: 700; }
 
-        /* Neural Mesh Background */
-        .grid-bg {
-            position: fixed; inset: 0; z-index: -1;
-            background: 
-                radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.03), transparent 70%),
-                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 100% 100%, 60px 60px, 60px 60px;
+        /* Smooth Scroll */
+        html { scroll-behavior: smooth; }
+
+        /* 3D Background */
+        #canvas-bg { position: fixed; inset: 0; z-index: -1; opacity: 0.4; }
+
+        /* Navigation Bar */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: rgba(3, 3, 3, 0.7); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Snappy Quantum Flare */
-        .flare {
-            position: absolute; width: 60px; height: 60px;
-            background: radial-gradient(circle, var(--f-color) 0%, transparent 75%);
-            border-radius: 50%; pointer-events: none; z-index: 1000;
-            transform: translate(-50%, -50%); transition: opacity 0.3s ease;
-        }
-
-        /* Premium Glass Morph */
-        .q-glass {
-            background: rgba(255, 255, 255, 0.01);
-            backdrop-filter: blur(30px);
+        /* Glassmorphism Elements */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
+            transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        .glass-card:hover { background: rgba(255, 255, 255, 0.05); border-color: var(--accent); }
+
+        /* Localized Pulse */
+        .click-pulse {
+            position: fixed; width: 15px; height: 15px; border-radius: 50%;
+            pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+            background: var(--accent); box-shadow: 0 0 30px var(--accent);
         }
 
-        .section { display: none; width: 100%; min-height: 100vh; flex-direction: column; opacity: 0; }
-        .active-section { display: flex; opacity: 1; transition: 0.5s ease-out; }
+        /* Section Handling */
+        .page-section { display: none; width: 100%; min-height: 100vh; flex-direction: column; }
+        .active-page { display: flex; animation: pageFade 0.6s ease; }
+        @keyframes pageFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* HUD Buttons */
-        .hud-btn {
-            background: transparent; border: 1px solid var(--q-cyan); color: var(--q-cyan);
-            font-family: 'Orbitron'; font-size: 10px; padding: 15px 40px;
-            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
-            transition: 0.3s; cursor: pointer; letter-spacing: 4px;
+        /* Buttons */
+        .btn-primary {
+            background: #fff; color: #000; font-weight: 800; padding: 14px 28px;
+            border-radius: 8px; text-transform: uppercase; font-size: 12px;
+            letter-spacing: 1px; transition: 0.3s;
         }
-        .hud-btn:hover { background: var(--q-cyan); color: #000; box-shadow: 0 0 30px var(--q-cyan); }
+        .btn-primary:hover { background: var(--accent); box-shadow: 0 0 30px var(--accent); transform: scale(1.05); }
 
-        /* Dashboard Hex-HUD */
-        .hex-container {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 20px;
+        /* Footer */
+        footer { background: #000; padding: 80px 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+
+        /* Dashboard Grid */
+        .dash-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px; width: 100%; max-width: 1400px; padding: 40px 0;
         }
-        @media (min-width: 1024px) { .hex-container { grid-template-columns: repeat(5, 1fr); gap: 30px; } }
 
-        .hex-item {
-            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
-            padding: 30px 10px; text-align: center; clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-            transition: 0.4s; cursor: pointer;
+        /* Input Styles */
+        input {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 18px; border-radius: 12px; color: #fff; width: 100%; font-size: 16px;
         }
-        .hex-item:hover { background: rgba(0, 242, 255, 0.1); border-color: var(--q-cyan); box-shadow: 0 0 20px var(--q-cyan); transform: scale(1.05); }
-
-        /* Footer Styling */
-        footer { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); background: #050505; padding: 60px 20px; margin-top: auto; }
-
-        input { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 5px; color: #fff; width: 100%; margin-bottom: 20px; }
+        input:focus { border-color: var(--accent); }
     </style>
 </head>
-<body onmousedown="popFlare(event)" ontouchstart="popFlare(event)">
+<body onmousedown="spawnPulse(event)">
 
-    <div class="grid-bg"></div>
+    <canvas id="canvas-bg"></canvas>
 
-    <!-- GLOBAL NAV -->
-    <nav class="fixed top-0 w-full z-[200] p-6 flex justify-between items-center bg-black/80 backdrop-blur-xl border-b border-white/5 px-10">
-        <div class="flex items-center gap-3 cursor-pointer" onclick="showSection('landing-page')">
-            <svg width="30" height="30" viewBox="0 0 100 100"><polygon points="50,5 95,25 95,75 50,95 5,75 5,25" fill="none" stroke="#00f2ff" stroke-width="5"/></svg>
-            <span class="heading-font text-xl uppercase tracking-tighter">VEXORA</span>
+    <!-- NAVIGATION BAR -->
+    <nav class="p-5 md:px-20 flex justify-between items-center">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('landing-page')">
+            <svg width="32" height="32" viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" fill="none" stroke="#00f2ff" stroke-width="8"/></svg>
+            <span class="heading-font text-xl tracking-tighter uppercase">VEXORA</span>
         </div>
-        <button onclick="showSection('auth-page')" class="text-[10px] tracking-[5px] text-cyan-400 font-bold uppercase border-b border-cyan-400">CONNECT_HUB</button>
+        <div class="hidden lg:flex gap-10 text-[10px] tracking-[4px] uppercase font-bold text-gray-500">
+            <a href="#science" class="hover:text-white transition">Science</a>
+            <a href="#ecosystem" class="hover:text-white transition">Ecosystem</a>
+            <a href="#legal" class="hover:text-white transition">Legal</a>
+        </div>
+        <button onclick="showPage('auth-page')" class="btn-primary !py-2 !px-6">Login</button>
     </nav>
 
     <!-- LANDING PAGE -->
-    <div id="landing-page" class="section active-section">
-        <div class="flex-1 flex flex-col items-center justify-center pt-20">
-            <!-- Quantum Core SVG -->
-            <div class="relative w-64 h-64 mb-10 flex items-center justify-center">
-                <svg viewBox="0 0 100 100" class="w-full h-full animate-[spin_10s_linear_infinite] opacity-20">
-                    <circle cx="50" cy="50" r="45" fill="none" stroke="#00f2ff" stroke-width="0.5" stroke-dasharray="10 5"/>
-                </svg>
-                <div class="absolute heading-font text-xs text-cyan-400 animate-pulse uppercase tracking-[8px]">Scanning...</div>
+    <div id="landing-page" class="page-section active-page">
+        <!-- Hero Section -->
+        <section class="flex-1 flex flex-col items-center justify-center text-center px-10 pt-40">
+            <h1 class="heading-font text-6xl md:text-[8rem] leading-[0.9] mb-8">ASHISH<br><span class="text-gray-600">QUANTUM</span></h1>
+            <p class="text-gray-400 text-sm md:text-xl max-w-2xl mb-12 font-light">
+                The world's first decentralized neural operating system. 
+                VEXORA: Engineering the next evolution of sentient technology.
+            </p>
+            <div class="flex gap-4">
+                <button onclick="showPage('auth-page')" class="btn-primary">Get Started</button>
+                <button class="px-10 py-3 border border-white/10 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-white/5 transition">Docs</button>
             </div>
+        </section>
 
-            <h1 class="heading-font text-5xl md:text-9xl text-center mb-6 uppercase">VEXORA<br><span class="text-gray-700 italic">Singularity</span></h1>
-            <p class="text-gray-500 tracking-[8px] uppercase text-[10px] md:text-xs mb-16 text-center">Ashish Quantum Industries // The Future Is Neural</p>
-            
-            <div class="flex flex-col md:flex-row gap-6 mb-20">
-                <button onclick="showSection('auth-page')" class="hud-btn">Execute Core</button>
-                <button class="hud-btn !border-white/10 !text-white">Whitepaper</button>
+        <!-- Science Section -->
+        <section id="science" class="py-40 px-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div class="glass-card p-10 rounded-3xl">
+                <div class="text-cyan-400 text-4xl mb-6 font-black">01</div>
+                <h3 class="heading-font text-xl mb-4">Neural Fabric</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Interconnected nodes processing reality at quantum speed.</p>
             </div>
-        </div>
+            <div class="glass-card p-10 rounded-3xl">
+                <div class="text-purple-400 text-4xl mb-6 font-black">02</div>
+                <h3 class="heading-font text-xl mb-4">Autonomous OS</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Self-learning algorithms that manage your entire digital existence.</p>
+            </div>
+            <div class="glass-card p-10 rounded-3xl">
+                <div class="text-pink-400 text-4xl mb-6 font-black">03</div>
+                <h3 class="heading-font text-xl mb-4">Secured Void</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">End-to-end encryption powered by molecular quantum logic.</p>
+            </div>
+        </section>
 
-        <!-- CORRECT FOOTER PLACEMENT -->
+        <!-- FOOTER -->
         <footer>
             <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 text-center md:text-left">
                 <div class="md:col-span-2">
-                    <h3 class="heading-font text-lg mb-4 uppercase">Ashish Quantum Industries</h3>
-                    <p class="text-gray-500 text-xs tracking-widest leading-loose">Pioneering world-scale decentralized neural operating systems. Engineering the next evolution of technology.</p>
+                    <h2 class="heading-font text-2xl mb-4">ASHISH QUANTUM INDUSTRIES</h2>
+                    <p class="text-gray-500 text-sm max-w-sm leading-loose">Leading the charge into the quantum era. VEXORA is a product of our dedicated neural research labs.</p>
                 </div>
                 <div>
-                    <h4 class="text-[10px] font-bold text-gray-400 tracking-[5px] uppercase mb-6">Ecosystem</h4>
-                    <ul class="text-gray-600 text-[10px] space-y-4 uppercase">
+                    <h4 class="text-[10px] font-bold text-white tracking-[4px] uppercase mb-6">Explore</h4>
+                    <ul class="text-gray-500 text-xs space-y-4">
                         <li class="hover:text-cyan-400 cursor-pointer">Security Nodes</li>
-                        <li class="hover:text-cyan-400 cursor-pointer">Quantum Cloud</li>
-                        <li class="hover:text-cyan-400 cursor-pointer">Ashish Labs</li>
+                        <li class="hover:text-cyan-400 cursor-pointer">Whitepaper</li>
+                        <li class="hover:text-cyan-400 cursor-pointer">Institutional Access</li>
                     </ul>
                 </div>
-                <div class="text-[9px] text-gray-700 tracking-[5px] flex flex-col justify-end uppercase">
-                    © 2025 ALL RIGHTS RESERVED BY ASHISH QUANTUM
+                <div>
+                    <h4 class="text-[10px] font-bold text-white tracking-[4px] uppercase mb-6">Company</h4>
+                    <ul class="text-gray-500 text-xs space-y-4">
+                        <li class="hover:text-cyan-400 cursor-pointer">Ethics Board</li>
+                        <li class="hover:text-cyan-400 cursor-pointer">About Ashish</li>
+                        <li class="hover:text-cyan-400 cursor-pointer">Connect Hub</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="max-w-7xl mx-auto mt-20 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-[9px] text-gray-600 tracking-[5px] uppercase">
+                <span>© 2025 ALL RIGHTS RESERVED BY ASHISH QUANTUM</span>
+                <div class="flex gap-8 mt-6 md:mt-0 text-lg">
+                    <i class="fab fa-twitter hover:text-white cursor-pointer transition"></i>
+                    <i class="fab fa-github hover:text-white cursor-pointer transition"></i>
+                    <i class="fab fa-discord hover:text-white cursor-pointer transition"></i>
                 </div>
             </div>
         </footer>
     </div>
 
     <!-- AUTH PAGE -->
-    <div id="auth-page" class="section items-center justify-center">
-        <div class="q-glass p-12 w-full max-w-lg border border-white/10 shadow-2xl">
+    <div id="auth-page" class="page-section items-center justify-center p-6">
+        <div class="glass-card w-full max-w-md p-12 rounded-[40px] relative overflow-hidden">
             <div id="login-view">
-                <h2 class="heading-font text-2xl text-center mb-10 tracking-widest">IDENTIFY</h2>
-                <input type="email" placeholder="NEURAL_ADDRESS">
-                <input type="password" placeholder="ACCESS_KEY">
-                <button onclick="showSection('dashboard-page')" class="hud-btn w-full">Establishing Sync</button>
-                <div class="flex justify-between items-center mt-10 text-[9px] font-bold text-gray-500 tracking-widest uppercase">
-                    <span onclick="toggleAuth('forgot')" class="hover:text-white cursor-pointer transition">Forget Key?</span>
-                    <span onclick="toggleAuth('register')" class="hover:text-white cursor-pointer transition">New Identity</span>
+                <h2 class="heading-font text-3xl mb-4 text-center">LOGIN</h2>
+                <p class="text-gray-500 text-center text-[10px] tracking-[4px] uppercase mb-10">Neural Credentials Required</p>
+                <div class="space-y-6">
+                    <input type="email" placeholder="NEURAL_EMAIL">
+                    <input type="password" placeholder="ACCESS_KEY">
+                    <button onclick="showPage('dashboard-page')" class="btn-primary w-full">Initialize Sync</button>
+                    <div class="flex justify-between text-[10px] text-gray-500 font-bold uppercase mt-8">
+                        <span onclick="toggleAuth('forgot')" class="hover:text-white cursor-pointer transition">Forget Key?</span>
+                        <span onclick="toggleAuth('signup')" class="hover:text-white cursor-pointer transition">Register New ID</span>
+                    </div>
                 </div>
             </div>
 
-            <div id="register-view" class="hidden">
-                <h2 class="heading-font text-2xl text-center mb-10 tracking-widest text-cyan-400">REGISTER</h2>
-                <input type="text" placeholder="FULL NAME">
-                <input type="email" placeholder="NEURAL ADDRESS">
-                <input type="password" placeholder="CREATE KEY">
-                <button onclick="toggleAuth('login')" class="hud-btn w-full !border-cyan-400">Register</button>
-                <p onclick="toggleAuth('login')" class="text-center mt-8 text-[9px] text-gray-500 cursor-pointer uppercase">Back to Login</p>
+            <!-- Signup View (Hidden) -->
+            <div id="signup-view" class="hidden">
+                <h2 class="heading-font text-3xl mb-4 text-center">REGISTER</h2>
+                <div class="space-y-6">
+                    <input type="text" placeholder="FULL NAME">
+                    <input type="email" placeholder="NEURAL ADDRESS">
+                    <input type="password" placeholder="CREATE ACCESS KEY">
+                    <button onclick="toggleAuth('login')" class="btn-primary w-full">Create Neural ID</button>
+                    <p onclick="toggleAuth('login')" class="text-center text-[10px] text-gray-500 mt-6 cursor-pointer hover:text-white">BACK TO LOGIN</p>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- DASHBOARD -->
-    <div id="dashboard-page" class="section pt-32 px-6">
+    <div id="dashboard-page" class="page-section p-10 pt-32">
         <div class="max-w-7xl mx-auto w-full">
-            <header class="flex flex-col md:flex-row justify-between items-center mb-16 gap-6">
-                <div class="text-center md:text-left">
-                    <h1 class="heading-font text-3xl italic">QUANTUM_HUD</h1>
-                    <p class="text-[9px] tracking-[6px] text-cyan-400 mt-2 font-bold uppercase underline">Ashish Quantum Industries Node_01</p>
+            <header class="flex flex-col md:flex-row justify-between items-center gap-10 mb-20">
+                <div>
+                    <h2 class="text-xs text-gray-500 tracking-[5px] uppercase mb-2">Authenticated Hub</h2>
+                    <h1 class="heading-font text-4xl">DASHBOARD</h1>
                 </div>
-                <div class="q-glass px-10 py-3 text-cyan-400 font-bold border-cyan-400/30 text-xs tracking-widest">SESSIONS: 5/5</div>
+                <div class="flex items-center gap-6">
+                    <div class="glass-card px-8 py-3 rounded-full text-[10px] font-black text-cyan-400 tracking-widest uppercase">Nodes: Stable</div>
+                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-black">
+                        <i class="fas fa-user-astronaut text-2xl"></i>
+                    </div>
+                </div>
             </header>
 
-            <div class="hex-container" id="grid"></div>
+            <div class="dash-grid" id="module-container"></div>
 
-            <div class="mt-20 w-full max-w-4xl mx-auto q-glass p-3 flex items-center shadow-2xl">
-                <input type="text" placeholder="Execute VEXORA Neural Command..." class="flex-1 bg-transparent p-4 outline-none text-xl italic font-light !mb-0 border-none">
-                <button onclick="exec()" class="w-16 h-16 bg-cyan-400 text-black flex items-center justify-center transition hover:bg-white">
-                    <i class="fas fa-chevron-right text-xl"></i>
-                </button>
+            <div class="fixed bottom-10 left-10 right-10 flex justify-center z-50">
+                <div class="glass-card w-full max-w-4xl p-2 rounded-2xl flex items-center shadow-2xl backdrop-blur-3xl">
+                    <input type="text" placeholder="Enter Neural Command..." class="flex-1 bg-transparent p-4 outline-none border-none text-xl font-light italic">
+                    <button class="w-14 h-14 bg-white text-black rounded-xl flex items-center justify-center hover:bg-cyan-400 transition" onclick="alert('VEXORA: Processing through Ashish Quantum Fabric...')">
+                        <i class="fas fa-paper-plane text-xl"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        const colors = ['#00f2ff', '#7000ff', '#ff00c1', '#00ff41', '#ffff00'];
-        
-        // Snappy Flare Logic
-        function popFlare(e) {
-            const x = e.clientX || (e.touches ? e.touches[0].clientX : 0);
-            const y = e.clientY || (e.touches ? e.touches[0].clientY : 0);
-            const flare = document.createElement('div');
-            flare.className = 'flare';
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            flare.style.setProperty('--f-color', color);
-            flare.style.left = x + 'px';
-            flare.style.top = y + 'px';
-            document.body.appendChild(flare);
-            gsap.to(flare, { scale: 3, opacity: 0, duration: 0.3, onComplete: () => flare.remove() });
+        // 1. THREE.JS BACKGROUND (SUBTLE NEURAL WEB)
+        let scene, camera, renderer, points;
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+            camera.position.z = 2;
+            const geo = new THREE.BufferGeometry();
+            const pos = [];
+            for(let i=0; i<3000; i++) pos.push((Math.random()-0.5)*10, (Math.random()-0.5)*10, (Math.random()-0.5)*10);
+            geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+            const mat = new THREE.PointsMaterial({ size: 0.005, color: 0x00f2ff, transparent: true, opacity: 0.5 });
+            points = new THREE.Points(geo, mat);
+            scene.add(points);
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas-bg'), antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            animate();
+        }
+        function animate() {
+            requestAnimationFrame(animate);
+            points.rotation.y += 0.0005;
+            renderer.render(scene, camera);
         }
 
-        function showSection(id) {
-            gsap.to(".section", { opacity: 0, y: 20, duration: 0.3, onComplete: () => {
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
+        // 2. INTERACTIVE PULSE
+        function spawnPulse(e) {
+            const p = document.createElement('div');
+            p.className = 'click-pulse';
+            p.style.left = e.clientX + 'px';
+            p.style.top = e.clientY + 'px';
+            document.body.appendChild(p);
+            gsap.to(p, { scale: 10, opacity: 0, duration: 0.6, onComplete: () => p.remove() });
+        }
+
+        // 3. NAVIGATION
+        function showPage(id) {
+            gsap.to(".page-section", { opacity: 0, y: 10, duration: 0.3, onComplete: () => {
+                document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active-page'));
                 const target = document.getElementById(id);
-                target.classList.add('active-section');
+                target.classList.add('active-page');
                 gsap.to(target, { opacity: 1, y: 0, duration: 0.5 });
             }});
+            window.scrollTo(0,0);
         }
 
         function toggleAuth(view) {
-            document.getElementById('login-view').classList.add('hidden');
-            document.getElementById('register-view').classList.add('hidden');
-            document.getElementById(view + '-view').classList.remove('hidden');
-        }
-
-        function exec() { alert("VEXORA Intelligence: Processing Command via Ashish Quantum Fabric..."); }
-
-        const m = [
-            {n:'Movie Gen', i:'video'}, {n:'Auto-Coder', i:'code'}, {n:'Sales Machine', i:'chart-line'}, {n:'Health AI', i:'heartbeat'},
-            {n:'Digital Twin', i:'dna'}, {n:'Dream Link', i:'moon'}, {n:'Voice Clone', i:'microphone'}, {n:'IoT Master', i:'network-wired'},
-            {n:'Legal AI', i:'scale-balanced'}, {n:'Skill Gen', i:'graduation-cap'}, {n:'Animal Speak', i:'paw'}, {n:'Energy Grid', i:'bolt'},
-            {n:'Life Path', i:'eye'}, {n:'Scam Shield', i:'user-secret'}, {n:'Ethics Eng', i:'brain'}, {n:'Soul Backup', i:'ghost'},
-            {n:'Cyber Shield', i:'shield-halved'}, {n:'Market AI', i:'arrow-trend-up'}, {n:'3D Architect', i:'cube'}, {n:'Neural Sync', i:'link'}
-        ];
-
-        const grid = document.getElementById('grid');
-        m.forEach(x => {
-            grid.innerHTML += `
-                <div class="hex-item">
-                    <i class="fas fa-${x.i} text-2xl text-gray-500 mb-4"></i>
-                    <p class="text-[7px] font-bold tracking-[2px] text-gray-500 uppercase">${x.n}</p>
-                </div>
-            `;
-        });
-    </script>
-</body>
-</html>
+            document.getElementById('logi
