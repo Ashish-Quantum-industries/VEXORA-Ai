@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VEXORA | Ashish Quantum Industries</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&display=swap');
+        :root { --q-cyan: #00f2ff; }
+        body { background: #000; color: #fff; font-family: 'Space Grotesk', sans-serif; overflow-x: hidden; cursor: crosshair; }
+        .heading-font { font-family: 'Syncopate', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.05); transition: 0.4s; }
+        .glass:hover { border-color: var(--q-cyan); box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); }
+        .q-btn { background: #000; border: 1px solid #333; transition: 0.5s; position: relative; overflow: hidden; }
+        .q-btn:hover { border-color: var(--q-cyan); box-shadow: 0 0 20px var(--q-cyan); transform: translateY(-3px); }
+        .hidden-section { display: none !important; }
+        .active-section { display: block; animation: quantumIn 0.8s ease; }
+        @keyframes quantumIn { from { opacity: 0; filter: blur(15px); } to { opacity: 1; filter: blur(0); } }
+        #payment-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(20px); }
+        .cursor-glow { position: fixed; width: 300px; height: 300px; background: radial-gradient(circle, rgba(0, 242, 255, 0.1) 0%, transparent 70%); border-radius: 50%; pointer-events: none; z-index: 999; transform: translate(-50%, -50%); }
+    </style>
+</head>
+<body onmousemove="updateCursor(event)">
+    <div class="cursor-glow" id="glow"></div>
+
+    <!-- PAYMENT MODAL -->
+    <div id="payment-modal">
+        <div class="max-w-md w-full glass p-10 rounded-[40px] text-center border-cyan-500/50">
+            <i class="fas fa-bolt text-4xl text-cyan-400 mb-6"></i>
+            <h2 class="heading-font text-xl mb-4">LIMIT REACHED</h2>
+            <p class="text-gray-500 mb-8 text-xs tracking-[3px] uppercase">Your 5 free quantum sessions are exhausted. Upgrade to continue using VEXORA Intelligence.</p>
+            <button onclick="window.location.reload()" class="w-full q-btn py-5 rounded-2xl font-bold text-cyan-400 tracking-[5px] uppercase">Activate License</button>
+            <p class="mt-6 text-[10px] text-gray-700 tracking-[5px] uppercase">Ashish Quantum Industries</p>
+        </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav class="fixed w-full z-50 glass p-5 flex justify-between items-center px-10">
+        <div class="heading-font text-lg font-bold tracking-tighter">ASHISH<span class="text-cyan-400"> QUANTUM</span></div>
+        <button onclick="showSection('auth-page')" class="q-btn px-6 py-2 rounded-lg text-[10px] font-bold tracking-[3px] text-cyan-400">CONNECT</button>
+    </nav>
+
+    <!-- LANDING -->
+    <div id="landing-page" class="active-section pt-40 min-h-screen">
+        <div class="flex flex-col items-center justify-center text-center px-6">
+            <h1 class="heading-font text-6xl md:text-[10rem] font-bold leading-none tracking-tighter mb-10">VEX<span class="text-gray-800">ORA.</span></h1>
+            <p class="text-gray-500 text-lg md:text-xl max-w-2xl mb-12 italic">Advanced Neural OS by Ashish Quantum Industries.</p>
+            <button onclick="showSection('auth-page')" class="q-btn px-16 py-6 rounded-3xl font-bold text-lg uppercase tracking-[8px] text-cyan-400">Initialise Core</button>
+        </div>
+        <footer class="mt-40 p-20 glass border-b-0 border-x-0">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20">
+                <div><h2 class="heading-font text-sm mb-6 uppercase tracking-[4px]">Ashish Quantum Industries</h2><p class="text-gray-600 text-xs">Pioneering the future of autonomous systems.</p></div>
+                <div class="text-[9px] text-gray-700 tracking-[5px] flex flex-col justify-end">© 2025 ASHISH QUANTUM INDUSTRIES. ALL RIGHTS RESERVED.</div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- AUTH -->
+    <div id="auth-page" class="hidden-section h-screen flex items-center justify-center p-6">
+        <div class="w-full max-w-md glass p-12 rounded-[50px] text-center">
+            <h2 class="heading-font text-xl mb-10 tracking-[5px]">SYNC IDENTITY</h2>
+            <div class="space-y-8 text-left">
+                <input type="email" placeholder="NEURAL ADDRESS" class="w-full bg-transparent border-b border-white/10 py-4 outline-none focus:border-cyan-400 tracking-widest italic">
+                <input type="password" placeholder="ACCESS KEY" class="w-full bg-transparent border-b border-white/10 py-4 outline-none focus:border-cyan-400 tracking-widest italic">
+                <button onclick="showSection('dashboard-page')" class="w-full q-btn py-5 rounded-2xl font-bold uppercase tracking-[10px] text-white">Login / Register</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard-page" class="hidden-section h-screen w-full flex overflow-hidden">
+        <aside class="w-72 h-full glass rounded-none p-10 hidden md:flex flex-col">
+            <div class="heading-font text-cyan-400 mb-20 text-sm">VEXORA_CORE</div>
+            <nav class="space-y-8 text-[10px] tracking-[4px] font-bold text-gray-500 uppercase">
+                <div class="text-white">Neural Hub</div>
+                <div class="hover:text-cyan-400 transition cursor-pointer">Wealth Bot</div>
+                <div class="hover:text-cyan-400 transition cursor-pointer">IoT Sync</div>
+            </nav>
+        </aside>
+        <main class="flex-1 p-10 overflow-y-auto">
+            <div class="flex justify-between items-center mb-10">
+                <h1 class="heading-font text-lg tracking-[5px]">QUANTUM_WORKSPACE</h1>
+                <div id="usage" class="text-[10px] text-cyan-400 border border-cyan-400/30 px-4 py-2 rounded-full">SESSIONS: 5/5</div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" id="grid"></div>
+            <div class="fixed bottom-10 left-10 md:left-80 right-10">
+                <div class="glass p-2 rounded-2xl flex items-center border-white/10">
+                    <input type="text" id="cmd" placeholder="Command Vexora..." class="flex-1 bg-transparent p-4 outline-none text-lg font-light">
+                    <button onclick="exec()" class="q-btn w-14 h-14 rounded-xl flex items-center justify-center text-cyan-400"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let u = localStorage.getItem('v_u') || 5;
+        function updateCursor(e) { const g = document.getElementById('glow'); g.style.left = e.clientX + 'px'; g.style.top = e.clientY + 'px'; }
+        function showSection(id) { document.querySelectorAll('#landing-page, #auth-page, #dashboard-page').forEach(s => s.classList.add('hidden-section')); document.getElementById(id).classList.remove('hidden-section'); document.getElementById(id).classList.add('active-section'); updateDisplay(); }
+        function updateDisplay() { const el = document.getElementById('usage'); if(el) el.innerText = `SESSIONS REMAINING: ${u}/5`; }
+        function exec() {
+            if(u <= 0) { document.getElementById('payment-modal').style.display = 'flex'; return; }
+            u--; localStorage.setItem('v_u', u); updateDisplay();
+            alert("VEXORA: Processing through Ashish Quantum Nodes...");
+        }
+        const m = [
+            {n:'Movie Gen', i:'video'}, {n:'Auto-Coder', i:'code'}, {n:'Sales Machine', i:'chart-line'}, {n:'Health AI', i:'heartbeat'},
+            {n:'Digital Twin', i:'dna'}, {n:'Dream Link', i:'moon'}, {n:'Voice Clone', i:'microphone'}, {n:'IoT Master', i:'network-wired'},
+            {n:'Legal AI', i:'scale-balanced'}, {n:'Skill Gen', i:'graduation-cap'}, {n:'Animal Speak', i:'paw'}, {n:'Energy Grid', i:'bolt'},
+            {n:'Life Path', i:'eye'}, {n:'Scam Shield', i:'user-secret'}, {n:'Ethics Eng', i:'brain'}, {n:'Soul Backup', i:'ghost'},
+            {n:'Cyber Shield', i:'shield-halved'}, {n:'Market AI', i:'arrow-trend-up'}, {n:'3D Architect', i:'cube'}, {n:'Neural Sync', i:'link'}
+        ];
+        const g = document.getElementById('grid');
+        m.forEach(x => { g.innerHTML += `<div class="glass p-6 text-center rounded-3xl hover:border-cyan-400 transition cursor-pointer group"><i class="fas fa-${x.i} text-xl text-gray-600 group-hover:text-cyan-400 mb-4 transition"></i><p class="text-[8px] font-bold tracking-[2px] text-gray-500 uppercase">${x.n}</p></div>`; });
+    </script>
+</body>
+</html>
