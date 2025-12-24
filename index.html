@@ -1,258 +1,247 @@
-            
+    
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VEXORA | Ashish Quantum Industries | Neural OS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VEXORA | Ashish Quantum Industries</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Orbitron:wght@400;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;700&family=Space+Grotesk:wght@300;700&display=swap');
         
-        :root { --q-cyan: #00f2ff; --q-purple: #7000ff; --q-pink: #ff00c1; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; color: #fff; font-family: 'Orbitron', sans-serif; overflow: hidden; }
+        :root {
+            --q-cyan: #00f2ff;
+            --q-purple: #7000ff;
+            --accent: var(--q-cyan);
+        }
 
-        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Subtle Quantum Grid Background */
+        .quantum-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+
+        /* Elegant Interaction Glow */
+        .aura {
+            position: fixed; width: 250px; height: 250px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            border-radius: 50%; pointer-events: none; z-index: 100;
+            transform: translate(-50%, -50%); transition: background 0.5s ease;
+        }
 
         .glass {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(40px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
         }
 
-        .heading-font { font-family: 'Syncopate', sans-serif; font-weight: 900; letter-spacing: -2px; }
+        .heading-font { font-family: 'Space Grotesk', sans-serif; font-weight: 700; letter-spacing: -1px; }
 
-        /* Sections */
-        .section { 
-            position: absolute; width: 100%; height: 100vh; 
-            display: none; opacity: 0; z-index: 10; 
-            align-items: center; justify-content: center;
+        .section {
+            display: none; width: 100%; min-height: 100vh;
+            padding: 20px; flex-direction: column; align-items: center; justify-content: center;
         }
-        .active-section { display: flex; opacity: 1; transition: 1s ease-in-out; }
+        .active-section { display: flex; animation: fadeIn 0.6s ease-out forwards; }
 
-        /* Quantum Buttons */
-        .q-btn {
-            position: relative; padding: 25px 60px; border-radius: 20px; 
-            background: #fff; color: #000; font-weight: 900; 
-            cursor: pointer; overflow: hidden; transition: 0.5s;
-            text-transform: uppercase; letter-spacing: 5px; border: none;
-        }
-        .q-btn:hover { 
-            background: var(--q-cyan); box-shadow: 0 0 80px var(--q-cyan); 
-            transform: scale(1.1) rotateX(10deg);
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        /* Form Logic */
-        .auth-card { width: 100%; max-width: 500px; padding: 50px; text-align: center; }
-        .input-group { position: relative; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 40px; }
-        .input-group input { background: transparent; border: none; width: 100%; padding: 15px; color: #fff; outline: none; font-size: 1.2rem; }
-        
-        /* Dashboard */
-        .grid-container { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-            gap: 25px; width: 100%; max-width: 1400px; height: 70vh; overflow-y: auto; padding: 20px;
+        /* Buttons */
+        .btn-q {
+            background: var(--accent); color: #000; font-weight: 800;
+            padding: 16px 32px; border-radius: 12px; text-transform: uppercase;
+            letter-spacing: 2px; font-size: 14px; transition: 0.3s; cursor: pointer;
         }
+        .btn-q:hover { transform: translateY(-3px); box-shadow: 0 10px 30px var(--accent); }
+
+        /* Responsive Grid for Dashboard */
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+            width: 100%; max-width: 1000px; margin-top: 30px;
+        }
+        @media (min-width: 768px) { .dashboard-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; } }
+
         .module-card {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-            padding: 30px; border-radius: 30px; text-align: center; transition: 0.5s;
+            padding: 25px 15px; text-align: center; border-radius: 20px;
+            transition: 0.4s; cursor: pointer; border: 1px solid rgba(255,255,255,0.05);
         }
-        .module-card:hover {
-            border-color: var(--dynamic-color); box-shadow: 0 0 40px var(--dynamic-color);
-            transform: translateY(-10px) rotateY(10deg);
+        .module-card:hover { border-color: var(--accent); background: rgba(255,255,255,0.05); }
+
+        /* Auth UI Fixes */
+        .auth-box { width: 100%; max-width: 400px; padding: 40px 25px; }
+        input { 
+            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            padding: 15px; border-radius: 12px; color: #fff; outline: none; margin-bottom: 20px;
         }
-
-        /* Footer Info */
-        .footer-brand { position: absolute; bottom: 40px; left: 60px; font-size: 10px; tracking: 5px; color: #555; }
-
-        /* Loader */
-        #loader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        input:focus { border-color: var(--accent); }
     </style>
 </head>
-<body>
+<body onmousedown="handleInteraction(event)" ontouchstart="handleInteraction(event)">
 
-    <div id="loader" class="heading-font text-4xl">INITIALIZING VEXORA...</div>
-    <canvas id="quantum-bg"></canvas>
+    <div class="aura" id="aura"></div>
+    <div class="quantum-bg"></div>
 
-    <!-- NAV -->
-    <nav class="fixed top-0 w-full z-[100] p-10 flex justify-between items-center px-20">
-        <div class="flex items-center gap-5 cursor-pointer" onclick="showSection('landing-page')">
-            <div id="logo-3d" style="width: 50px; height: 50px;"></div>
-            <span class="heading-font text-3xl">VEXORA</span>
+    <!-- HEADER / LOGO -->
+    <nav class="fixed top-0 w-full z-[200] p-6 flex justify-between items-center bg-black/50 backdrop-blur-md">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="showSection('landing-page')">
+            <div class="w-6 h-6 border-2 border-cyan-400 rotate-45"></div>
+            <span class="heading-font text-xl tracking-tighter uppercase">VEXORA</span>
         </div>
-        <button onclick="showSection('auth-page')" class="q-btn !py-3 !px-8 !text-[10px]">Access Hub</button>
+        <button onclick="showSection('auth-page')" class="text-[10px] tracking-[3px] border-b border-cyan-400 pb-1">INITIALIZE</button>
     </nav>
 
     <!-- LANDING PAGE -->
     <div id="landing-page" class="section active-section">
-        <div class="text-center">
-            <h1 class="heading-font text-[8vw] leading-none mb-10" id="main-title">SINGULARITY</h1>
-            <p class="text-gray-500 tracking-[10px] uppercase text-sm mb-20">Ashish Quantum Industries // Neural Interface</p>
-            <div class="flex gap-10 justify-center">
-                <button onclick="showSection('auth-page')" class="q-btn">Break Reality</button>
-                <button class="q-btn !bg-transparent !text-white border border-white/20">The Code</button>
+        <div class="text-center max-w-4xl">
+            <h1 class="heading-font text-5xl md:text-9xl mb-6">INTELLIGENCE <br> <span class="text-gray-500">REDEFINED.</span></h1>
+            <p class="text-gray-400 text-sm md:text-lg tracking-widest uppercase mb-12 px-6">
+                Ashish Quantum Industries // Autonomous OS v1.0
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center px-10">
+                <button onclick="showSection('auth-page')" class="btn-q">Enter System</button>
+                <button class="glass px-10 py-4 text-xs font-bold tracking-widest uppercase border-white/10">The Science</button>
             </div>
         </div>
-        <div class="footer-brand uppercase tracking-[5px]">Built for the Future by Ashish Quantum</div>
     </div>
 
     <!-- AUTH PAGE -->
     <div id="auth-page" class="section">
-        <div class="glass auth-card" id="form-container">
-            <!-- LOGIN FORM -->
-            <div id="login-form">
-                <h2 class="heading-font text-3xl mb-10">IDENTIFY</h2>
-                <div class="input-group"><input type="email" placeholder="NEURAL ADDRESS"></div>
-                <div class="input-group"><input type="password" placeholder="ACCESS KEY"></div>
-                <button onclick="showSection('dashboard-page')" class="q-btn w-full">Establish Link</button>
-                <div class="flex justify-between mt-10 text-[10px] tracking-widest text-gray-500 uppercase">
-                    <span class="hover:text-cyan-400 cursor-pointer" onclick="toggleForm('forgot')">Forget Key?</span>
-                    <span class="hover:text-cyan-400 cursor-pointer" onclick="toggleForm('signup')">New Identity</span>
+        <div class="glass auth-box" id="auth-container">
+            <!-- Login State -->
+            <div id="login-state">
+                <h2 class="heading-font text-2xl text-center mb-10">IDENTIFY</h2>
+                <input type="email" placeholder="NEURAL ADDRESS">
+                <input type="password" placeholder="ACCESS KEY">
+                <button onclick="showSection('dashboard-page')" class="btn-q w-full">Establishing Link</button>
+                <div class="flex justify-between mt-8 text-[10px] text-gray-500 font-bold tracking-widest uppercase">
+                    <span onclick="toggleAuth('forgot')" class="cursor-pointer hover:text-white transition">Forgot Key?</span>
+                    <span onclick="toggleAuth('signup')" class="cursor-pointer hover:text-white transition">New Identity</span>
                 </div>
             </div>
 
-            <!-- SIGNUP FORM (Hidden) -->
-            <div id="signup-form" class="hidden">
-                <h2 class="heading-font text-3xl mb-10">REGISTER</h2>
-                <div class="input-group"><input type="text" placeholder="FULL NAME"></div>
-                <div class="input-group"><input type="email" placeholder="NEURAL ADDRESS"></div>
-                <div class="input-group"><input type="password" placeholder="CREATE KEY"></div>
-                <button onclick="toggleForm('login')" class="q-btn w-full">Create ID</button>
-                <p class="mt-8 text-[10px] cursor-pointer text-gray-500" onclick="toggleForm('login')">BACK TO LOGIN</p>
+            <!-- Signup State -->
+            <div id="signup-state" class="hidden">
+                <h2 class="heading-font text-2xl text-center mb-10">REGISTER</h2>
+                <input type="text" placeholder="FULL NAME">
+                <input type="email" placeholder="NEURAL ADDRESS">
+                <input type="password" placeholder="CREATE KEY">
+                <button onclick="toggleAuth('login')" class="btn-q w-full italic">Generate Identity</button>
+                <p onclick="toggleAuth('login')" class="text-center mt-6 text-[10px] text-gray-500 cursor-pointer uppercase">Back to Login</p>
             </div>
 
-            <!-- FORGOT FORM (Hidden) -->
-            <div id="forgot-form" class="hidden">
-                <h2 class="heading-font text-3xl mb-10">RECOVER</h2>
-                <p class="text-xs text-gray-500 mb-10 uppercase">Enter email to recover access</p>
-                <div class="input-group"><input type="email" placeholder="NEURAL ADDRESS"></div>
-                <button onclick="toggleForm('login')" class="q-btn w-full">Send Recovery</button>
-                <p class="mt-8 text-[10px] cursor-pointer text-gray-500" onclick="toggleForm('login')">BACK TO LOGIN</p>
+            <!-- Forgot State -->
+            <div id="forgot-state" class="hidden">
+                <h2 class="heading-font text-2xl text-center mb-10">RECOVERY</h2>
+                <input type="email" placeholder="NEURAL ADDRESS">
+                <button onclick="toggleAuth('login')" class="btn-q w-full">Send Recovery Key</button>
+                <p onclick="toggleAuth('login')" class="text-center mt-6 text-[10px] text-gray-500 cursor-pointer uppercase">Back to Login</p>
             </div>
         </div>
     </div>
 
     <!-- DASHBOARD -->
     <div id="dashboard-page" class="section">
-        <div class="w-full h-full flex flex-col p-20 pt-32">
-            <div class="flex justify-between items-center mb-10">
-                <div>
-                    <h1 class="heading-font text-4xl">QUANTUM_HUB</h1>
-                    <p class="text-cyan-400 text-[10px] tracking-[5px] mt-2">USER STATUS: GOD MODE</p>
+        <div class="w-full max-w-6xl px-4 py-24">
+            <header class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
+                <div class="text-center md:text-left">
+                    <h1 class="heading-font text-3xl">QUANTUM HUB</h1>
+                    <p class="text-[10px] tracking-[5px] text-cyan-400 mt-2 font-bold uppercase">Ashish Industries Node 001</p>
                 </div>
-                <div class="glass px-10 py-4 text-cyan-400 font-bold border-cyan-400" id="usage-meter">CREDITS: 5/5</div>
+                <div class="glass px-8 py-3 text-cyan-400 font-bold border-cyan-400/50 text-xs tracking-widest">
+                    SESSIONS: 5/5
+                </div>
+            </header>
+
+            <div class="dashboard-grid" id="module-container">
+                <!-- Modules injected here -->
             </div>
 
-            <div class="grid-container" id="module-grid"></div>
-
-            <div class="mt-10 flex justify-center">
-                <div class="glass w-full max-w-5xl p-2 flex items-center">
-                    <input type="text" placeholder="COMMAND VEXORA..." class="bg-transparent flex-1 p-5 outline-none text-2xl italic">
-                    <button class="q-btn !p-5 !rounded-full" onclick="blastEffect(event)"><i class="fas fa-paper-plane"></i></button>
+            <div class="mt-12 w-full max-w-3xl mx-auto relative group">
+                <div class="absolute -inset-1 bg-cyan-400 rounded-2xl blur opacity-10 group-hover:opacity-30 transition"></div>
+                <div class="glass p-2 flex items-center">
+                    <input type="text" placeholder="Command VEXORA..." class="flex-1 bg-transparent p-4 outline-none text-lg italic border-none mb-0">
+                    <button class="w-14 h-14 bg-white text-black rounded-xl flex items-center justify-center transition hover:bg-cyan-400" onclick="triggerMagic()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 1. THREE.JS QUANTUM ENGINE
-        let scene, camera, renderer, particles, raycaster, mouse;
-
-        function init3D() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-            camera.position.z = 5;
-
-            const geo = new THREE.BufferGeometry();
-            const pos = [];
-            for(let i=0; i<20000; i++) {
-                pos.push((Math.random()-0.5)*20, (Math.random()-0.5)*20, (Math.random()-0.5)*20);
-            }
-            geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-            const mat = new THREE.PointsMaterial({ size: 0.015, color: 0x00f2ff, transparent: true, opacity: 0.8 });
-            particles = new THREE.Points(geo, mat);
-            scene.add(particles);
-
-            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('quantum-bg'), antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            
-            document.getElementById('loader').style.display = 'none';
-            animate();
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            particles.rotation.y += 0.002;
-            particles.rotation.x += 0.001;
-            renderer.render(scene, camera);
-        }
-
-        // 2. FORM TOGGLE LOGIC (Fixing your Issue)
-        function toggleForm(type) {
-            document.getElementById('login-form').classList.add('hidden');
-            document.getElementById('signup-form').classList.add('hidden');
-            document.getElementById('forgot-form').classList.add('hidden');
-            document.getElementById(type + '-form').classList.remove('hidden');
-        }
-
-        // 3. UI NAVIGATION
-        function showSection(id) {
-            gsap.to(".section", { opacity: 0, duration: 0.5, onComplete: () => {
-                document.querySelectorAll(".section").forEach(s => s.classList.remove("active-section"));
-                const active = document.getElementById(id);
-                active.classList.add("active-section");
-                gsap.to(active, { opacity: 1, duration: 1 });
-            }});
-        }
-
-        // 4. MULTI-COLOR BURST EFFECT
         const colors = ['#00f2ff', '#7000ff', '#ff00c1', '#00ff41', '#ffff00', '#ff8800'];
-        function blastEffect(e) {
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            particles.material.color.set(color);
-            document.documentElement.style.setProperty('--dynamic-color', color);
+        const aura = document.getElementById('aura');
 
-            const spark = document.createElement('div');
-            spark.style.position = 'fixed';
-            spark.style.left = e.clientX + 'px';
-            spark.style.top = e.clientY + 'px';
-            spark.style.width = '2px';
-            spark.style.height = '2px';
-            spark.style.background = color;
-            spark.style.boxShadow = `0 0 100px 50px ${color}`;
-            spark.style.borderRadius = '50%';
-            spark.style.zIndex = '10000';
-            document.body.appendChild(spark);
-            gsap.to(spark, { scale: 100, opacity: 0, duration: 1, onComplete: () => spark.remove() });
+        // Professional Interaction Logic
+        function handleInteraction(e) {
+            const x = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            const y = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+            
+            aura.style.left = x + 'px';
+            aura.style.top = y + 'px';
+
+            // Subtle color shift
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            document.documentElement.style.setProperty('--accent', randomColor);
+            aura.style.background = `radial-gradient(circle, ${randomColor}33 0%, transparent 70%)`;
         }
 
-        // 5. MODULE INJECTION
-        const m = [
-            {n:'Movie Gen', i:'video'}, {n:'Auto-Coder', i:'code'}, {n:'Sales Engine', i:'chart-line'}, {n:'Health AI', i:'heartbeat'},
-            {n:'Digital Twin', i:'dna'}, {n:'Dream Link', i:'moon'}, {n:'Voice Clone', i:'microphone'}, {n:'IoT Master', i:'network-wired'},
-            {n:'Legal AI', i:'scale-balanced'}, {n:'Skill Gen', i:'graduation-cap'}, {n:'Animal Speak', i:'paw'}, {n:'Energy Grid', i:'bolt'},
-            {n:'Life Path', i:'eye'}, {n:'Scam Shield', i:'user-secret'}, {n:'Ethics Eng', i:'brain'}, {n:'Soul Backup', i:'ghost'},
-            {n:'Cyber Shield', i:'shield-halved'}, {n:'Market AI', i:'arrow-trend-up'}, {n:'3D Architect', i:'cube'}, {n:'Neural Sync', i:'link'}
+        function triggerMagic() {
+            alert("VEXORA Intelligence: Analyzing your command through Ashish Quantum Fabric...");
+        }
+
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
+            document.getElementById(id).classList.add('active-section');
+            window.scrollTo(0,0);
+        }
+
+        function toggleAuth(state) {
+            document.getElementById('login-state').classList.add('hidden');
+            document.getElementById('signup-state').classList.add('hidden');
+            document.getElementById('forgot-state').classList.add('hidden');
+            document.getElementById(state + '-state').classList.remove('hidden');
+        }
+
+        // Dashboard Modules (Mobile Responsive)
+        const modules = [
+            {n: 'Movie Gen', i: 'video'}, {n: 'Auto-Coder', i: 'code'}, {n: 'Sales Machine', i: 'chart-line'}, {n: 'Health AI', i: 'heartbeat'},
+            {n: 'Digital Twin', i: 'dna'}, {n: 'Dream Link', i: 'moon'}, {n: 'Voice Clone', i: 'microphone'}, {n: 'IoT Master', i: 'network-wired'},
+            {n: 'Legal AI', i: 'scale-balanced'}, {n: 'Skill Gen', i: 'graduation-cap'}, {n: 'Animal Speak', i: 'paw'}, {n: 'Energy Grid', i: 'bolt'},
+            {n: 'Life Path', i: 'eye'}, {n: 'Scam Shield', i: 'user-secret'}, {n: 'Ethics Eng', i: 'brain'}, {n: 'Soul Backup', i: 'ghost'},
+            {n: 'Cyber Shield', i: 'shield-halved'}, {n: 'Market AI', i: 'arrow-trend-up'}, {n: '3D Architect', i: 'cube'}, {n: 'Neural Sync', i: 'link'}
         ];
 
-        const grid = document.getElementById('module-grid');
-        m.forEach(x => {
-            grid.innerHTML += `
-                <div class="module-card group" onmouseover="this.style.setProperty('--dynamic-color', colors[Math.floor(Math.random()*colors.length)])">
-                    <i class="fas fa-${x.i} text-4xl mb-6 text-white group-hover:text-cyan-400 transition"></i>
-                    <p class="text-[10px] font-bold tracking-[3px] text-gray-500 uppercase">${x.n}</p>
+        const container = document.getElementById('module-container');
+        modules.forEach(m => {
+            container.innerHTML += `
+                <div class="module-card glass group">
+                    <i class="fas fa-${m.i} text-xl text-gray-500 group-hover:text-white mb-4 transition"></i>
+                    <p class="text-[8px] font-bold tracking-[2px] text-gray-500 group-hover:text-white uppercase">${m.n}</p>
                 </div>
             `;
         });
 
-        window.addEventListener('mousedown', blastEffect);
-        init3D();
+        // Track mouse movement for Aura
+        window.addEventListener('mousemove', handleInteraction);
     </script>
 </body>
 </html>
