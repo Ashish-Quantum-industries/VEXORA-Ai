@@ -1,79 +1,108 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VEXORA | Ashish Quantum Industries</title>
+    
+    <!-- SEO SUPREMACY -->
+    <meta name="title" content="VEXORA | World's Most Powerful AI Hub">
+    <meta name="description" content="Official VEXORA AI tool by Ashish Quantum Industries. 21+ Futuristic tools.">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Plus+Jakarta+Sans:wght@300;600;800&display=swap');
         :root { --accent: #00f2ff; --bg: #000; }
-        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; height: 100vh; }
+        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; height: 100vh; }
         .heading-font { font-family: 'Orbitron', sans-serif; font-weight: 900; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; }
-        .q-input { width: 100%; background: #111; border: 3px solid #333; padding: 20px; border-radius: 12px; color: #fff; font-weight: 700; margin-bottom: 15px; }
+        .glass { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(40px); border: 2px solid rgba(255, 255, 255, 0.15); border-radius: 24px; }
+        
+        /* THICK INPUTS */
+        .q-input { width: 100%; background: #111; border: 3px solid #333; padding: 22px; border-radius: 14px; color: #fff; font-weight: 700; margin-bottom: 20px; font-size: 16px; }
         .q-input:focus { border-color: var(--accent); }
-        .login-btn { background: var(--accent); color: #000; font-family: 'Orbitron'; font-weight: 900; padding: 12px 30px; border-radius: 6px; cursor: pointer; }
+
+        .btn-main { background: var(--accent); color: #000; font-family: 'Orbitron'; font-weight: 900; padding: 15px 35px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        
+        /* FULL HUB GRID */
+        .hub-scroll { height: calc(100vh - 80px); overflow-y: auto; padding-top: 100px; scrollbar-width: none; }
+        .tool-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 1300px; margin: 0 auto; padding: 20px; }
+        @media (min-width: 1024px) { .tool-grid { grid-template-columns: repeat(5, 1fr); gap: 25px; } }
+
+        .tool-card { background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.1); padding: 35px 20px; text-align: center; border-radius: 20px; cursor: pointer; transition: 0.4s; }
+        .tool-card:hover { border-color: var(--accent); transform: translateY(-10px); box-shadow: 0 10px 40px rgba(0, 242, 255, 0.2); }
+        .tool-card i { font-size: 2.5rem; color: var(--accent); margin-bottom: 15px; }
+
+        /* MODALS */
+        .overlay { position: fixed; inset: 0; z-index: 9000; background: rgba(0,0,0,0.98); display: flex; align-items: center; justify-content: center; padding: 20px; }
         .hidden { display: none !important; }
-        #auth-gate { position: fixed; inset: 0; z-index: 9000; background: rgba(0,0,0,0.98); display: flex; align-items: center; justify-content: center; }
-        .tool-card { background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.1); padding: 30px; text-align: center; border-radius: 20px; cursor: pointer; transition: 0.3s; }
-        .tool-card:hover { border-color: var(--accent); transform: translateY(-10px); }
+        
+        /* SUB-DASHBOARD (Workstation) */
+        .workspace-view { position: fixed; inset: 0; z-index: 8000; background: #050505; overflow-y: auto; padding: 30px; display: none; flex-direction: column; }
     </style>
 </head>
 <body>
 
-    <!-- AUTH GATE (Strict Login) -->
-    <div id="auth-gate">
-        <div class="glass p-10 w-full max-w-md text-center">
-            <h2 class="heading-font text-2xl mb-8 uppercase">Neural Identity Required</h2>
-            <div id="login-form">
-                <input type="email" id="email-in" placeholder="EMAIL ADDRESS" class="q-input" required>
-                <input type="password" id="pass-in" placeholder="ACCESS KEY" class="q-input" required>
-                <button onclick="loginUser()" class="login-btn w-full !py-5">Verify & Synchronize</button>
-                <div class="flex justify-between mt-6 text-[10px] font-bold text-gray-500 uppercase">
-                    <span class="cursor-pointer hover:text-white">Recover Access</span>
-                    <span class="cursor-pointer hover:text-white">New Registration</span>
-                </div>
+    <!-- AUTH GATE (Register & Login) -->
+    <div id="auth-gate" class="overlay">
+        <!-- LOGIN VIEW -->
+        <div class="glass p-12 w-full max-w-lg text-center" id="login-view">
+            <h2 class="heading-font text-2xl mb-8 uppercase">Neural Login</h2>
+            <input type="email" id="l-email" placeholder="NEURAL ADDRESS" class="q-input">
+            <input type="password" id="l-pass" placeholder="ACCESS KEY" class="q-input">
+            <button onclick="login()" class="btn-main w-full !py-6">SYNCHRONIZE CORE</button>
+            <div class="flex justify-between mt-10 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                <span class="cursor-pointer hover:text-white" onclick="alert('Contact Admin for Recovery')">Recover Key</span>
+                <span class="cursor-pointer hover:text-cyan-400" onclick="showAuth('register')">New Registration</span>
             </div>
+        </div>
+
+        <!-- REGISTER VIEW -->
+        <div class="glass p-12 w-full max-w-lg text-center hidden" id="register-view">
+            <h2 class="heading-font text-2xl mb-8 uppercase text-cyan-400">Register Identity</h2>
+            <input type="text" id="r-name" placeholder="FULL NAME" class="q-input">
+            <input type="email" id="r-email" placeholder="NEURAL ADDRESS" class="q-input">
+            <input type="password" id="r-pass" placeholder="CREATE ACCESS KEY" class="q-input">
+            <button onclick="register()" class="btn-main w-full !py-6">GENERATE IDENTITY</button>
+            <p class="mt-8 text-[10px] text-gray-500 cursor-pointer uppercase font-bold" onclick="showAuth('login')">Back to Login</p>
         </div>
     </div>
 
-    <!-- MAIN HUB -->
+    <!-- MAIN NAV -->
     <nav class="fixed top-0 w-full z-50 p-6 px-10 flex justify-between items-center glass border-t-0 border-x-0">
         <span class="heading-font text-xl text-white">VEXORA</span>
-        <span id="credits-top" class="text-[10px] font-black text-cyan-400 tracking-widest">SESSIONS: 5/5 FREE</span>
+        <div class="flex items-center gap-6">
+            <span id="creds" class="text-[9px] font-black text-cyan-400 tracking-widest">SESSIONS: 5/5 FREE</span>
+            <button class="text-xs font-bold text-gray-500 uppercase" onclick="location.reload()">Logout</button>
+        </div>
     </nav>
 
-    <div class="h-screen overflow-y-auto pt-24 pb-10 px-10">
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 max-w-7xl mx-auto" id="main-grid"></div>
+    <!-- HUB (ALL 21 TOOLS) -->
+    <div class="hub-scroll">
+        <div class="text-center py-10">
+            <h1 class="heading-font text-4xl lg:text-7xl mb-4">SINGULARITY_HUB</h1>
+            <p class="text-gray-500 text-[10px] tracking-[10px] uppercase">Ashish Quantum Industries</p>
+        </div>
+        <div class="tool-grid" id="main-grid"></div>
     </div>
 
-    <!-- STYLE TRANSFER WORKSPACE -->
-    <div id="workspace-ui" class="fixed inset-0 z-[6000] bg-black hidden flex-col p-10 overflow-y-auto">
+    <!-- UNIVERSAL WORKSPACE -->
+    <div id="workspace" class="workspace-view">
         <button onclick="closeTool()" class="text-xs font-bold text-gray-500 mb-10"><i class="fas fa-arrow-left"></i> BACK TO HUB</button>
-        <div class="glass p-10 max-w-4xl mx-auto w-full">
-            <h2 class="heading-font text-2xl mb-10 text-cyan-400 text-center">AI STYLE TRANSFER PRO</h2>
-            
-            <!-- Real Upload Input -->
-            <input type="file" id="video-upload" class="hidden" accept="video/*" onchange="handleFileSelect(this)">
-            <div class="w-full aspect-video bg-zinc-900 border-4 border-dashed border-zinc-800 rounded-3xl flex flex-col items-center justify-center cursor-pointer hover:border-cyan-400" onclick="document.getElementById('video-upload').click()">
-                <i class="fas fa-cloud-upload text-5xl mb-4 text-zinc-700"></i>
-                <p id="file-name" class="text-zinc-500 font-bold uppercase text-xs tracking-widest">Tap to Upload Source Video</p>
-            </div>
+        <div class="glass p-10 max-w-5xl mx-auto w-full" id="ws-content">
+            <!-- Dynamic Tool Dashboards Load Here -->
+        </div>
+    </div>
 
-            <div class="mt-10 space-y-6">
-                <select id="style-sel" class="q-input">
-                    <option>Pixar 3D Model</option><option>Cyberpunk Matrix</option><option>Ghibli Anime</option><option>Realistic 8K Enhance</option>
-                </select>
-                <textarea id="prompt-in" class="q-input h-32" placeholder="Instructions (e.g. Change sky to red, add AI music)"></textarea>
-                <button onclick="runProcess()" class="login-btn w-full !py-6 !text-lg">GENERATE AI SEQUENCE</button>
-            </div>
-
-            <div id="output-box" class="mt-10 p-6 bg-zinc-950 rounded-2xl hidden border border-cyan-400/30 text-center">
-                <p id="status-text" class="text-cyan-400 font-bold mb-4">Processing...</p>
-                <button class="login-btn !bg-green-500 !text-black">Download 8K Neural Result</button>
-            </div>
+    <!-- PAYMENT -->
+    <div id="pay-modal" class="overlay hidden">
+        <div class="glass p-16 max-w-md w-full text-center border-cyan-400">
+            <i class="fas fa-crown text-5xl text-cyan-400 mb-8"></i>
+            <h2 class="heading-font text-xl mb-4">LIMIT REACHED</h2>
+            <p class="text-gray-500 text-[10px] tracking-[5px] uppercase mb-12">Session expired. Upgrade for Global Institutional Access.</p>
+            <button class="btn-main w-full !py-6" onclick="location.reload()">Activate for $49/Yr</button>
         </div>
     </div>
 
@@ -81,67 +110,98 @@
         let isAuth = false;
         let credits = 5;
 
-        // Strict Login Logic
-        function loginUser() {
-            const email = document.getElementById('email-in').value;
-            const pass = document.getElementById('pass-in').value;
-            
-            if(email.includes("@") && pass.length >= 6) {
-                isAuth = true;
-                document.getElementById('auth-gate').classList.add('hidden');
-                alert("Identity Confirmed: Nodes Synchronized.");
-            } else {
-                alert("Invalid Credentials. Please use a valid email and 6-digit password.");
-            }
+        // AUTH LOGIC
+        function showAuth(view) {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('register-view').classList.add('hidden');
+            document.getElementById(view + '-view').classList.remove('hidden');
         }
 
-        // Tool Data
+        async function register() {
+            const email = document.getElementById('r-email').value;
+            const pass = document.getElementById('r-pass').value;
+            const response = await fetch('/api/register', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({email, password: pass}) });
+            const data = await response.json();
+            alert(data.message);
+            if(data.status === "Success") showAuth('login');
+        }
+
+        async function login() {
+            const email = document.getElementById('l-email').value;
+            const pass = document.getElementById('l-pass').value;
+            const response = await fetch('/api/login', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({email, password: pass}) });
+            const data = await response.json();
+            if(data.status === "Success") {
+                isAuth = true;
+                document.getElementById('auth-gate').classList.add('hidden');
+                alert("Identity Verified. Hub Unlocked.");
+            } else { alert(data.message); }
+        }
+
+        // 21 TOOLS DATA
         const tools = [
-            {n:'AI Style Transfer', i:'wand-magic-sparkles'}, {n:'Auto-Coder', i:'code'}, {n:'8K Movie Gen', i:'film'},
-            {n:'Health AI', i:'microscope'}, {n:'Digital Twin', i:'dna'}, {n:'Market AI', i:'chart-line'}
+            {n:'AI Style Transfer', i:'wand-magic-sparkles', ui:`
+                <h2 class="heading-font text-2xl mb-10 text-cyan-400">AI STYLE TRANSFER PRO</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="border-4 border-dashed border-zinc-800 p-20 rounded-3xl text-center cursor-pointer hover:border-cyan-400" onclick="alert('Opening File Manager...')">
+                        <i class="fas fa-cloud-upload text-5xl mb-4 text-zinc-700"></i>
+                        <p class="text-xs font-bold uppercase text-zinc-500">Upload Video Source</p>
+                    </div>
+                    <div class="space-y-6 text-left">
+                        <label class="text-[10px] font-bold uppercase text-gray-500">Style Model</label>
+                        <select class="q-input"><option>Cyberpunk Matrix</option><option>Pixar 3D Cinematic</option><option>Ghibli Hand-Drawn</option><option>8K Realistic</option><option>Oil Painting</option><option>Sketch Motion</option><option>Claymation V2</option></select>
+                        <textarea class="q-input h-32" id="style-prompt" placeholder="Modification instructions..."></textarea>
+                        <button onclick="runTool('Style Transfer')" class="btn-main w-full">GENERATE SEQUENCE</button>
+                    </div>
+                </div>
+                <div class="output-area mt-10" id="output-node">
+                    <p class="text-[10px] font-bold text-gray-600 tracking-[5px] uppercase">Quantum Output Node</p>
+                    <div id="status-text" class="mt-4 text-xs text-gray-700 italic">Waiting...</div>
+                    <div id="down-btn" class="hidden mt-6"><button class="btn-main !bg-green-500">Download 8K Neural Result</button></div>
+                </div>
+            `},
+            {n:'Auto-Coder', i:'code', ui:`<h2 class="heading-font text-2xl mb-10 text-cyan-400 uppercase">Architecture Lab</h2><textarea class="q-input h-64" placeholder="Describe logic..."></textarea><button onclick="runTool('Coder')" class="btn-main w-full">Build System</button>`},
+            {n:'8K Movie Gen', i:'film', ui:`<h2 class="heading-font text-2xl mb-10 text-cyan-400 uppercase">Cinematic Render</h2><input type="text" placeholder="Script Name" class="q-input"><button onclick="runTool('Movie')" class="btn-main w-full">Render Film</button>`},
+            {n:'Market AI', i:'chart-line'}, {n:'Health AI', i:'microscope'}, {n:'Digital Twin', i:'dna'},
+            {n:'Dream Link', i:'moon'}, {n:'Voice Clone', i:'microphone-lines'}, {n:'IoT Master', i:'house-signal'},
+            {n:'Legal AI', i:'scale-balanced'}, {n:'Skill Gen', i:'graduation-cap'}, {n:'Animal Speak', i:'paw'},
+            {n:'Energy Grid', i:'bolt-lightning'}, {n:'Life Path', i:'eye'}, {n:'Scam Shield', i:'user-shield'},
+            {n:'Ethics Eng', i:'brain'}, {n:'Soul Backup', i:'ghost'}, {n:'Cyber Shield', i:'shield-halved'},
+            {n:'Sales Machine', i:'bullseye'}, {n:'3D Architect', i:'cube'}, {n:'Neural Sync', i:'link'}
         ];
 
         const grid = document.getElementById('main-grid');
         tools.forEach((t, i) => {
-            grid.innerHTML += `<div class="tool-card" onclick="openTool(${i})"><i class="fas fa-${t.i}"></i><h3 class="heading-font text-[10px] uppercase">${t.n}</h3></div>`;
+            grid.innerHTML += `<div class="tool-card" onclick="openTool(${i})"><i class="fas fa-${t.i}"></i><h3 class="heading-font text-[12px] uppercase">${t.n}</h3></div>`;
         });
 
         function openTool(i) {
             if(!isAuth) return;
-            if(tools[i].n === 'AI Style Transfer') document.getElementById('workspace-ui').classList.remove('hidden');
+            if(credits <= 0) { document.getElementById('pay-modal').classList.remove('hidden'); return; }
+            const t = tools[i];
+            document.getElementById('ws-content').innerHTML = t.ui || `<div class="text-center py-20"><i class="fas fa-${t.i} text-6xl mb-10 opacity-10"></i><h2 class="heading-font text-3xl mb-10 uppercase">${t.n} Workstation</h2><button onclick="runTool('${t.n}')" class="btn-main px-20">Execute</button></div>`;
+            document.getElementById('workspace').style.display = 'flex';
         }
 
-        function closeTool() { document.getElementById('workspace-ui').classList.add('hidden'); }
+        function closeTool() { document.getElementById('workspace').style.display = 'none'; }
 
-        function handleFileSelect(input) {
-            if(input.files && input.files[0]) {
-                document.getElementById('file-name').innerText = "SELECTED: " + input.files[0].name;
-                document.getElementById('file-name').classList.add('text-cyan-400');
-            }
-        }
-
-        async function runProcess() {
-            if(credits <= 0) { alert("Limit Reached!"); return; }
+        async function runTool(name) {
             const status = document.getElementById('status-text');
-            document.getElementById('output-box').classList.remove('hidden');
-            status.innerText = "VEXORA: Calling Ashish Quantum Nodes...";
-
-            try {
-                // Fixed API Call
-                const response = await fetch('/api/process', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tool: "Style Transfer", prompt: document.getElementById('prompt-in').value })
-                });
-                const data = await response.json();
-                
-                if(data.status === "Success") {
-                    credits--;
-                    document.getElementById('credits-top').innerText = `SESSIONS: ${credits}/5 FREE`;
-                    status.innerText = "SEQUENCE SUCCESSFULLY PROCESSED.";
-                }
-            } catch (err) {
-                alert("Backend Syncing... Please wait 5 seconds for Vercel to wake up.");
+            if(status) status.innerText = "VEXORA: Processing through Ashish Quantum Cluster...";
+            
+            const response = await fetch('/api/process', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({tool: name}) });
+            const data = await response.json();
+            
+            if(data.status === "Success") {
+                credits--;
+                document.getElementById('creds').innerText = `SESSIONS: ${credits}/5 FREE`;
+                if(status) {
+                    setTimeout(() => {
+                        status.innerText = "Neural Sequence Complete.";
+                        document.getElementById('down-btn').classList.remove('hidden');
+                    }, 2000);
+                } else { alert(data.message); }
+                if(credits <= 0) { closeTool(); document.getElementById('pay-modal').classList.remove('hidden'); }
             }
         }
     </script>
