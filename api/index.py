@@ -1,40 +1,46 @@
+
+import os
+import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import google.generativeai as genai
 
 app = Flask(__name__)
 CORS(app)
 
-# Ashish Quantum Industries - In-memory Database
-users_db = {} 
+# VEXORA MASTER KEY (Configured)
+GEMINI_API_KEY = "AIzaSyC-0F-IweAYqFHjU46C7UpJyadCgs361tg"
 
-@app.route('/api/register', methods=['POST'])
-def register():
-    data = request.json
-    email = data.get('email')
-    password = data.get('password')
-    if email in users_db:
-        return jsonify({"status": "Error", "message": "Neural ID already exists."}), 400
-    users_db[email] = password
-    return jsonify({"status": "Success", "message": "Neural Identity Generated. Log in to Sync."})
-
-@app.route('/api/login', methods=['POST'])
-def login():
-    data = request.json
-    email = data.get('email')
-    password = data.get('password')
-    if email in users_db and users_db[email] == password:
-        return jsonify({"status": "Success", "message": "Neural Sync Complete."})
-    return jsonify({"status": "Error", "message": "Neural Identity Invalid."}), 401
+# Initialize Google Gemini
+genai.configure(api_key=GEMINI_API_KEY)
+model = genai.GenerativeModel('gemini-1.5-pro')
 
 @app.route('/api/process', methods=['POST'])
-def process():
-    data = request.json
-    tool_name = data.get('tool', 'Unknown Tool')
-    return jsonify({
-        "status": "Success",
-        "message": f"Successfully Processed via Ashish Quantum Nodes.",
-        "tool": tool_name
-    })
+def process_ai():
+    try:
+        data = request.json
+        tool = data.get('tool', 'VEXORA Core')
+        prompt = data.get('prompt', 'Initialize session')
 
+        # Roleplay as VEXORA Intelligence
+        system_instruction = f"You are VEXORA AI, a world-class autonomous intelligence engineered by Ashish Quantum Industries. Your output must be extremely professional, realistic, and detailed. Task for tool '{tool}': {prompt}"
+
+        # Get AI Response
+        response = model.generate_content(system_instruction)
+        ai_output = response.text
+
+        return jsonify({
+            "status": "Success",
+            "message": ai_output,
+            "credits_left": 4
+        })
+
+    except Exception as e:
+        return jsonify({
+            "status": "Error",
+            "message": "Quantum Link Interrupted. Neural Nodes Re-syncing..."
+        }), 500
+
+# Vercel Handler
 def handler(request, context):
     return app(request, context)
