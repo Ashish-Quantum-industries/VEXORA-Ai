@@ -2,28 +2,21 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app) # Security: Ye ensure karta hai ki sirf aapki website hi backend ko use kare
+CORS(app)
 
 @app.route('/api/process', methods=['POST'])
-def process_ai():
+def process():
     try:
-        # Frontend se data lena
         data = request.json
-        tool_name = data.get('tool', 'Unknown Tool')
-        user_prompt = data.get('prompt', 'No prompt provided')
-
-        # AI Logic: Abhi hum testing ke liye success bhej rahe hain
-        # Taki aapka dashboard sach mein response dikhane lage
+        # Simulation of AI Processing
         return jsonify({
             "status": "Success",
-            "message": f"Ashish Quantum Node processed: {tool_name}",
-            "details": f"Logic Applied: {user_prompt}",
-            "credits_left": 4
+            "message": "Quantum processing complete through Ashish Nodes.",
+            "output_url": "https://vexora-ai-five.vercel.app/demo_output.mp4"
         })
-
     except Exception as e:
         return jsonify({"status": "Error", "message": str(e)}), 500
 
-# Vercel ko batane ke liye ki ye Flask app hai
+# Vercel requirements
 def handler(request, context):
     return app(request, context)
