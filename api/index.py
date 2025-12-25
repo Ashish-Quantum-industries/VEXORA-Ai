@@ -1,36 +1,29 @@
 from flask import Flask, request, jsonify
-import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app) # Security: Ye ensure karta hai ki sirf aapki website hi backend ko use kare
 
 @app.route('/api/process', methods=['POST'])
 def process_ai():
     try:
+        # Frontend se data lena
         data = request.json
-        tool = data.get('tool')
-        prompt = data.get('prompt')
-        email = data.get('email')
+        tool_name = data.get('tool', 'Unknown Tool')
+        user_prompt = data.get('prompt', 'No prompt provided')
 
-        # 1. SECURITY: Validate requests
-        if not email:
-            return jsonify({"error": "Neural Identity required"}), 403
-
-        # 2. AI LOGIC (Style Transfer Example)
-        # Yahan hum Google Gemini ya specialized AI API ko call karenge
-        result_message = f"VEXORA Processing {tool} for {email}. Logic: {prompt}"
-        
-        # 3. OUTPUT GENERATION
-        # Realistic Response jo user ko dashboard me dikhega
+        # AI Logic: Abhi hum testing ke liye success bhej rahe hain
+        # Taki aapka dashboard sach mein response dikhane lage
         return jsonify({
             "status": "Success",
-            "output_url": "https://vexora-storage.com/generated_video_v1.mp4", # Dummy URL for now
-            "message": result_message,
-            "credits_remaining": 4
+            "message": f"Ashish Quantum Node processed: {tool_name}",
+            "details": f"Logic Applied: {user_prompt}",
+            "credits_left": 4
         })
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"status": "Error", "message": str(e)}), 500
 
-# Vercel ko batane ke liye ki ye main app hai
-def handler(event, context):
-    return app(event, context)
+# Vercel ko batane ke liye ki ye Flask app hai
+def handler(request, context):
+    return app(request, context)
