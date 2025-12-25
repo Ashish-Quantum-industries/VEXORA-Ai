@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VEXORA | Ashish Quantum Industries | Neural Hub</title>
+    <title>VEXORA | Quantum AI Hub | Ashish Quantum Industries</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -14,36 +15,47 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Plus+Jakarta+Sans:wght@300;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@300;600;800&display=swap');
         :root { --accent: #00f2ff; --bg: #000; --panel: rgba(255, 255, 255, 0.15); }
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
-        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; height: 100vh; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; width: 100vw; height: 100vh; }
         .heading-font { font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 2px; }
 
-        #flare { position: fixed; width: 120px; height: 120px; background: radial-gradient(circle, var(--fc, #00f2ff) 30%, transparent 70%); pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.1s linear; filter: blur(8px); }
+        /* SNAPPY INTERACTION GLOW */
+        #flare { position: fixed; width: 130px; height: 130px; background: radial-gradient(circle, var(--fc, #00f2ff) 30%, transparent 70%); pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.1s linear; filter: blur(10px); }
 
-        nav { position: fixed; top: 0; width: 100%; height: 80px; z-index: 5000; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; background: rgba(0, 0, 0, 0.95); border-bottom: 2px solid var(--accent); backdrop-filter: blur(40px); }
-        .login-btn { background: var(--accent); color: #000; font-family: 'Orbitron'; font-weight: 900; padding: 12px 25px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        /* HUD NAVIGATION */
+        nav { position: fixed; top: 0; width: 100%; height: 80px; z-index: 5000; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; background: rgba(0, 0, 0, 0.95); border-bottom: 3px solid var(--accent); backdrop-filter: blur(40px); }
+        .login-btn { background: var(--accent); color: #000; font-family: 'Orbitron'; font-weight: 900; font-size: 11px; padding: 12px 30px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
 
+        /* MAIN SCROLL AREA */
         .main-scroll { height: 100vh; padding-top: 80px; overflow-y: auto; scrollbar-width: none; }
-        .grid-hud { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 40px; max-width: 1400px; margin: 0 auto; }
-        @media (max-width: 768px) { .grid-hud { grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; } }
+        .grid-hud { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; padding: 50px; max-width: 1400px; margin: 0 auto; }
+        @media (max-width: 768px) { .grid-hud { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px; } }
 
-        .tool-card { background: var(--panel); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 40px 20px; text-align: center; cursor: pointer; transition: 0.4s; }
+        .tool-card { background: var(--panel); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 24px; padding: 40px 20px; text-align: center; cursor: pointer; transition: 0.4s; }
         .tool-card:hover { border-color: var(--accent); transform: translateY(-10px); box-shadow: 0 0 40px rgba(0,242,255,0.4); }
-        
+        .tool-card i { font-size: 3rem; color: var(--accent); margin-bottom: 15px; filter: drop-shadow(0 0 10px var(--accent)); }
+
+        /* AUTH PORTAL */
         #auth-gate { position: fixed; inset: 0; z-index: 9000; background: rgba(0,0,0,0.98); display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: #0a0a0a; border: 3px solid #333; padding: 40px; width: 100%; max-width: 480px; border-radius: 35px; }
-        .q-input { width: 100%; background: #111; border: 3px solid #333; padding: 18px; border-radius: 12px; color: #fff; font-weight: 700; margin-bottom: 15px; font-size: 16px; }
+        .auth-card { background: #0a0a0a; border: 3px solid #333; padding: 50px; width: 100%; max-width: 480px; border-radius: 35px; box-shadow: 0 0 100px rgba(0,242,255,0.1); }
+        .q-input { width: 100%; background: #111; border: 3px solid #444; padding: 22px; border-radius: 14px; color: #fff; font-weight: 700; margin-bottom: 20px; font-size: 16px; transition: 0.3s; }
+        .q-input:focus { border-color: var(--accent); background: #161616; }
+        .google-btn { background: #fff; color: #000; width: 100%; padding: 18px; border-radius: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; margin-top: 15px; transition: 0.3s; }
 
+        /* WORKSPACE (FILMORA STYLE) */
         .workspace-ui { position: fixed; inset: 0; z-index: 6000; background: #050505; display: none; flex-direction: column; overflow-y: auto; padding: 20px; }
-        .ws-box { background: #0c0c0c; border: 2px solid #222; border-radius: 25px; width: 100%; max-width: 1000px; margin: 20px auto; padding: 40px; }
-        .upload-area { width: 100%; aspect-ratio: 16/9; background: #151515; border: 4px dashed #444; border-radius: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
-        .hidden { display: none !important; }
+        .ws-box { background: #0c0c0c; border: 2px solid #333; border-radius: 30px; width: 100%; max-width: 950px; margin: 40px auto; padding: 45px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+        .upload-area { width: 100%; aspect-ratio: 16/9; background: #111; border: 4px dashed #333; border-radius: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .upload-area:hover { border-color: var(--accent); }
+        .output-box { width: 100%; min-height: 200px; background: #080808; border: 2px solid #1a1a1a; border-radius: 20px; margin-top: 40px; padding: 25px; text-align: center; }
 
-        /* LOADING ANIMATION */
         .loader-ring { width: 40px; height: 40px; border: 4px solid rgba(0,242,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        footer { background: #000; padding: 100px 40px; border-top: 1px solid #222; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body onmousedown="popFlare(event)" onmouseup="killFlare()" ontouchstart="popFlare(event)" ontouchend="killFlare()">
@@ -57,47 +69,58 @@
             <span class="heading-font text-2xl text-white uppercase">VEXORA</span>
         </div>
         <div class="flex items-center gap-6">
-            <span id="credits-top" class="text-[9px] font-black text-cyan-400 uppercase hidden md:block">SESSIONS: 5/5 FREE</span>
-            <button id="main-login-btn" class="login-btn">NODE: OFFLINE</button>
+            <span id="credits-top" class="text-[9px] font-black text-gray-500 uppercase hidden md:block">SYNC: 5/5 FREE</span>
+            <button onclick="location.reload()" id="main-login-btn" class="login-btn">NODE: OFFLINE</button>
         </div>
     </nav>
 
     <!-- AUTH GATE -->
     <div id="auth-gate">
+        <!-- LOGIN -->
         <div class="auth-card" id="view-login">
-            <h2 class="heading-font text-2xl mb-8 text-center">NEURAL LOGIN</h2>
-            <input type="email" id="l-email" placeholder="EMAIL ADDRESS" class="q-input">
+            <h2 class="heading-font text-2xl mb-8 text-center uppercase">Neural Identity</h2>
+            <input type="email" id="l-email" placeholder="NEURAL ADDRESS" class="q-input">
             <input type="password" id="l-pass" placeholder="ACCESS KEY" class="q-input">
-            <button onclick="loginEmail()" class="login-btn w-full !py-6">SYNCHRONIZE CORE</button>
-            <button onclick="loginGoogle()" class="w-full bg-white text-black py-4 rounded-xl mt-4 font-bold flex items-center justify-center gap-2">
+            <button onclick="loginEmail()" class="login-btn w-full !py-6 !text-sm">Synchronize Core</button>
+            <div class="google-btn" onclick="loginGoogle()">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_Logo.svg" width="20"> Sign in with Google
-            </button>
-            <div class="flex justify-between mt-10 text-[10px] font-bold text-gray-500 uppercase">
-                <span class="cursor-pointer hover:text-white" onclick="switchAuth('register')">New Identity</span>
+            </div>
+            <div class="flex justify-between mt-10">
+                <span class="text-[10px] font-bold text-gray-600 uppercase cursor-pointer" onclick="switchAuth('forgot')">Recover Key</span>
+                <span class="text-[10px] font-bold text-gray-500 uppercase cursor-pointer" onclick="switchAuth('register')">New Identity</span>
             </div>
         </div>
+        <!-- REGISTER -->
         <div class="auth-card hidden" id="view-register">
-            <h2 class="heading-font text-2xl mb-8 text-center text-cyan-400">REGISTER</h2>
+            <h2 class="heading-font text-2xl mb-8 text-center text-cyan-400 uppercase">Generate ID</h2>
+            <input type="text" id="r-name" placeholder="FULL NAME" class="q-input">
             <input type="email" id="r-email" placeholder="EMAIL ADDRESS" class="q-input">
-            <input type="password" id="r-pass" placeholder="PASSWORD (6+ Characters)" class="q-input">
-            <button onclick="registerEmail()" class="login-btn w-full !py-6">GENERATE ID</button>
-            <p class="mt-8 text-center text-gray-600 font-bold cursor-pointer" onclick="switchAuth('login')">BACK TO LOGIN</p>
+            <input type="password" id="r-pass" placeholder="CREATE KEY" class="q-input">
+            <button onclick="registerEmail()" class="login-btn w-full !py-6">Create Neural Identity</button>
+            <p class="mt-8 text-center text-gray-600 font-bold uppercase text-[9px] cursor-pointer" onclick="switchAuth('login')">Return to Login</p>
         </div>
     </div>
 
     <!-- MAIN HUB -->
     <div class="main-scroll">
-        <div class="text-center py-20 px-6 border-b border-white/5">
-            <h1 class="heading-font text-4xl lg:text-7xl mb-4">NEURAL_HUB_V15</h1>
-            <p class="text-cyan-400 text-[10px] tracking-[10px] font-bold uppercase underline">Creator: Ashish Quantum Industries</p>
+        <div class="text-center py-20 border-b border-white/5 bg-gradient-to-b from-zinc-900/20 to-transparent">
+            <h1 class="heading-font text-4xl lg:text-7xl mb-4 text-white uppercase">Neural_Hub_V16</h1>
+            <p class="text-cyan-400 text-[10px] tracking-[12px] font-bold uppercase underline">Ashish Quantum Industries // Active Nodes</p>
         </div>
         <div class="grid-hud" id="main-grid"></div>
+        <footer>
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-20 text-center md:text-left">
+                <div><h2 class="heading-font text-lg mb-4 uppercase text-white">Ashish Quantum</h2><p class="text-gray-500 text-xs tracking-widest leading-loose">Engineering superior decentralized neural systems.</p></div>
+                <div><h4 class="text-[10px] font-black text-white tracking-[4px] uppercase mb-8">Ecosystem</h4><ul class="text-gray-600 text-[10px] space-y-4 uppercase font-bold"><li>Science Portal</li><li>Security Charter</li><li>Ethics Board</li></ul></div>
+                <div class="text-[9px] text-gray-700 tracking-[8px] flex items-end uppercase">© 2025 ALL RIGHTS RESERVED</div>
+            </div>
+        </footer>
     </div>
 
     <!-- WORKSPACE UI -->
     <div id="workspace-ui" class="workspace-ui">
         <nav class="!relative !bg-transparent border-white/5 !px-4">
-            <button onclick="closeTool()" class="text-[10px] font-black text-gray-500 hover:text-white uppercase"><i class="fas fa-arrow-left"></i> HUB</button>
+            <button onclick="closeTool()" class="text-[10px] font-black text-gray-500 hover:text-white uppercase transition"><i class="fas fa-arrow-left"></i> HUB</button>
             <span id="ws-title" class="heading-font text-lg text-cyan-400"></span>
             <div class="px-6 py-2 border border-white/10 rounded-full text-[9px] font-bold">NODE: ONLINE</div>
         </nav>
@@ -136,8 +159,8 @@
         });
 
         function loginGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
-        function registerEmail() { auth.createUserWithEmailAndPassword(document.getElementById('r-email').value, document.getElementById('r-pass').value).catch(e => alert(e.message)); }
-        function loginEmail() { auth.signInWithEmailAndPassword(document.getElementById('l-email').value, document.getElementById('l-pass').value).catch(e => alert("Neural Access Key Invalid")); }
+        function registerEmail() { auth.createUserWithEmailAndPassword(document.getElementById('r-email').value, document.getElementById('r-pass').value).then(() => switchAuth('login')).catch(e => alert(e.message)); }
+        function loginEmail() { auth.signInWithEmailAndPassword(document.getElementById('l-email').value, document.getElementById('l-pass').value).catch(e => alert("Invalid Access Key")); }
 
         // TOOL DATA (21 TOOLS)
         const tools = [
@@ -146,86 +169,71 @@
                     <div class="upload-area" id="drop-zone" onclick="document.getElementById('real-file-input').click()">
                         <div class="text-center"><i class="fas fa-cloud-upload text-5xl mb-6 text-cyan-400 opacity-20"></i><p id="upload-status" class="heading-font text-xs tracking-[5px] text-gray-500 uppercase">Select Source Video</p></div>
                     </div>
-                    <div class="mt-10">
-                        <label class="text-[10px] font-black uppercase text-gray-500 mb-2 block tracking-[3px]">Select Aesthetic Model</label>
-                        <select id="style-sel" class="q-input"><option>Cyberpunk Matrix</option><option>Pixar 3D Cinematic</option><option>8K Ultra-Realistic</option><option>Makoto Shinkai Anime</option><option>Claymation V2</option></select>
-                        <label class="text-[10px] font-black uppercase text-gray-500 mb-2 block tracking-[3px]">Modification Prompt (Instructions)</label>
-                        <textarea id="prompt-in" class="q-input h-32" placeholder="e.g. Change sky to red, replace audio with copyright-free AI music..."></textarea>
+                    <div class="mt-12">
+                        <label class="text-[10px] font-black uppercase text-gray-600 mb-3 block tracking-[3px]">Neural Style Model</label>
+                        <select id="style-sel" class="q-input"><option>Cyberpunk Matrix</option><option>Pixar Cinematic 3D</option><option>8K Realistic Enhance</option><option>Ghibli Anime</option><option>Oil Painting Pro</option><option>Neon Sketch</option><option>Claymation V2</option></select>
+                        <label class="text-[10px] font-black uppercase text-gray-600 mb-3 block tracking-[3px]">Modification Prompt (AI Reading...)</label>
+                        <textarea id="prompt-in" class="q-input h-32" placeholder="e.g. Martian landscape, replace audio with cinematic AI music..."></textarea>
                         <button onclick="runRealProcess()" class="login-btn w-full !py-6 !text-lg">GENERATE AI SEQUENCE</button>
                     </div>
-                    <div id="output-node" class="mt-10 p-10 bg-zinc-950 rounded-3xl border border-white/5 text-center hidden">
+                    <div id="output-node" class="hidden mt-12 p-8 bg-zinc-950 rounded-3xl border border-white/5 text-center">
                         <div id="loader-icon" class="loader-ring mx-auto mb-6"></div>
                         <p id="render-status" class="heading-font text-xs text-cyan-400">CONNECTING TO ASHISH NODES...</p>
-                        <div id="download-box" class="hidden mt-10">
-                            <button class="login-btn !bg-green-500 !text-black !py-5 w-full">DOWNLOAD 8K NEURAL RENDER</button>
-                        </div>
+                        <div id="download-box" class="hidden mt-8"><button class="login-btn !bg-green-500 !text-black !py-4">Download 8K Neural Render</button></div>
                     </div>
                 </div>
             `},
-            {n:'Auto-Coder', i:'code', ui:`<div class="ws-box"><h2 class="heading-font text-xl mb-10 text-center">Architecture Lab</h2><textarea id="prompt-in" class="q-input h-64" placeholder="Describe software logic..."></textarea><button onclick="runRealProcess()" class="login-btn w-full !py-6">COMPILE SYSTEM</button><div id="output-node" class="hidden mt-10 p-6 glass text-green-400 font-mono text-xs text-left">> Compiling successful.<br>> Ashish Quantum Nodes Active.</div></div>`},
-            // Other tool placeholders...
+            {n:'Auto-Coder', i:'code', ui:`<div class="ws-box text-center"><h2 class="heading-font text-2xl mb-12 uppercase">Architecture Lab</h2><textarea class="q-input h-64" id="prompt-in" placeholder="Describe software logic architecture..."></textarea><button onclick="runRealProcess()" class="login-btn w-full !py-6">COMPILE SYSTEM</button><div id="output-node" class="hidden mt-10 p-6 glass text-cyan-400 text-xs text-left">Processing complete. Output ready.</div></div>`},
             {n:'8K Movie Gen', i:'film'}, {n:'Market AI', i:'chart-line'}, {n:'Health AI', i:'microscope'}, {n:'Digital Twin', i:'dna'}, {n:'Dream Link', i:'moon'}, {n:'Voice Clone', i:'microphone-lines'}, {n:'IoT Master', i:'house-signal'}, {n:'Legal AI', i:'scale-balanced'}, {n:'Skill Gen', i:'graduation-cap'}, {n:'Animal Speak', i:'paw'}, {n:'Energy Grid', i:'bolt-lightning'}, {n:'Life Path', i:'eye'}, {n:'Scam Shield', i:'user-shield'}, {n:'Ethics Eng', i:'brain'}, {n:'Soul Backup', i:'ghost'}, {n:'Cyber Shield', i:'shield-halved'}, {n:'Sales Machine', i:'bullseye'}, {n:'3D Architect', i:'cube'}, {n:'Neural Sync', i:'link'}
         ];
 
         const grid = document.getElementById('main-grid');
         tools.forEach((t, i) => {
-            grid.innerHTML += `<div class="tool-card" onclick="openTool(${i})"><i class="fas fa-${t.i}"></i><h3 class="heading-font text-[12px] uppercase tracking-[4px]">${t.n}</h3><p class="text-[8px] text-gray-500 mt-4 font-bold uppercase">Ready to Sync</p></div>`;
+            grid.innerHTML += `<div class="tool-card" onclick="openTool(${i})"><i class="fas fa-${t.i}"></i><h3 class="heading-font text-[12px] uppercase tracking-[4px]">${t.n}</h3><p class="text-[8px] text-gray-700 mt-4 font-black">NODE_READY</p></div>`;
         });
 
         function openTool(i) {
-            if(!auth.currentUser) { alert("Identity Required."); return; }
-            if(credits <= 0) { alert("Session Limit Reached."); return; }
+            if(!auth.currentUser) { openAuth(); return; }
+            if(credits <= 0) { alert("Credits exhausted."); return; }
             const t = tools[i];
             document.getElementById('ws-title').innerText = t.n.toUpperCase();
-            document.getElementById('ws-content').innerHTML = t.ui || `<div class="ws-box text-center"><i class="fas fa-${t.i} text-6xl text-white/5 mb-10"></i><h2 class="heading-font text-xl mb-10 uppercase">${t.n} WORKSTATION</h2><textarea id="prompt-in" class="q-input h-48" placeholder="Command VEXORA..."></textarea><button onclick="runRealProcess()" class="login-btn w-full !py-6">EXECUTE COMMAND</button><div id="output-node" class="hidden mt-10 p-6 glass text-cyan-400 text-xs">Node Processing Successful.</div></div>`;
+            document.getElementById('ws-content').innerHTML = t.ui || `<div class="ws-box text-center"><i class="fas fa-${t.i} text-6xl text-white/5 mb-10"></i><h2 class="heading-font text-2xl mb-10 uppercase">${t.n} WORKSTATION</h2><textarea id="prompt-in" class="q-input h-48" placeholder="Command VEXORA..."></textarea><button onclick="runRealProcess()" class="login-btn w-full !py-6">Initiate Operation</button><div id="output-node" class="hidden mt-10 p-6 glass text-cyan-400 text-xs">Successfully Executed.</div></div>`;
             document.getElementById('workspace-ui').style.display = 'flex';
         }
 
         function handleFile(input) {
             if(input.files && input.files[0]) {
-                document.getElementById('upload-status').innerText = "SOURCE SELECTED: " + input.files[0].name;
-                document.getElementById('upload-status').style.color = "#00f2ff";
+                const status = document.getElementById('upload-status');
+                if(status) status.innerText = "SELECTED: " + input.files[0].name;
             }
         }
 
-        // REAL FUNCTIONAL LOGIC (The Brain)
         async function runRealProcess() {
-            const outNode = document.getElementById('output-node');
             const status = document.getElementById('render-status');
-            const loader = document.getElementById('loader-icon');
-            const downBox = document.getElementById('download-box');
+            const node = document.getElementById('output-node');
+            const promptVal = document.getElementById('prompt-in').value;
+            const toolName = document.getElementById('ws-title').innerText;
 
-            if(outNode) outNode.classList.remove('hidden');
-            if(status) status.innerText = "VEXORA: ANALYZING NEURAL DATA...";
+            if(!promptVal) { alert("Prompt required."); return; }
+            if(node) node.classList.remove('hidden');
 
             try {
-                // Real call to your api/index.py
-                const response = await fetch('/api/process', {
+                const res = await fetch('/api/process', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ 
-                        tool: document.getElementById('ws-title').innerText,
-                        prompt: document.getElementById('prompt-in') ? document.getElementById('prompt-in').value : "Default Action"
-                    })
+                    body: JSON.stringify({ tool: toolName, prompt: promptVal })
                 });
-                
-                const data = await response.json();
-
+                const data = await res.json();
                 if(data.status === "Success") {
                     credits--;
                     document.getElementById('credits-top').innerText = `SYNC: ${credits}/5 FREE`;
-                    
-                    // Realistic delay simulation
-                    setTimeout(() => {
-                        if(loader) loader.classList.add('hidden');
-                        if(status) status.innerText = "SEQUENCE PROCESSED BY ASHISH QUANTUM NODES.";
-                        if(downBox) downBox.classList.remove('hidden');
-                    }, 4000);
+                    if(status) {
+                        status.innerHTML = `<div class="bg-zinc-900 p-6 rounded-xl text-left font-mono text-[10px] leading-relaxed">${data.message}</div>`;
+                        document.getElementById('loader-icon').classList.add('hidden');
+                        document.getElementById('download-box').classList.remove('hidden');
+                    }
                 }
-            } catch (err) {
-                if(status) status.innerText = "LINK FAILED. RE-ESTABLISHING...";
-                setTimeout(() => runRealProcess(), 2000);
-            }
+            } catch (e) { alert("Sync failed. Check API connection."); }
         }
 
         function closeTool() { document.getElementById('workspace-ui').style.display = 'none'; }
