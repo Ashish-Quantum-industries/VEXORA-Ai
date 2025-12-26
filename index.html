@@ -209,32 +209,41 @@
         }
 
         async function runRealProcess() {
-            const status = document.getElementById('render-status');
-            const node = document.getElementById('output-node');
-            const promptVal = document.getElementById('prompt-in').value;
-            const toolName = document.getElementById('ws-title').innerText;
+    const status = document.getElementById('render-status');
+    const node = document.getElementById('output-node');
+    const promptVal = document.getElementById('prompt-in') ? document.getElementById('prompt-in').value : "";
+    const toolName = document.getElementById('ws-title').innerText;
 
-            if(!promptVal) { alert("Prompt required."); return; }
-            if(node) node.classList.remove('hidden');
+    if(!promptVal) { alert("Neural Command Required."); return; }
+    if(node) node.classList.remove('hidden');
+    if(status) status.innerHTML = `<div class="loader-ring mx-auto mb-4"></div> VEXORA: ANALYZING VIA ASHISH QUANTUM NODES...`;
 
-            try {
-                const res = await fetch('/api/process', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ tool: toolName, prompt: promptVal })
-                });
-                const data = await res.json();
-                if(data.status === "Success") {
-                    credits--;
-                    document.getElementById('credits-top').innerText = `SYNC: ${credits}/5 FREE`;
-                    if(status) {
-                        status.innerHTML = `<div class="bg-zinc-900 p-6 rounded-xl text-left font-mono text-[10px] leading-relaxed">${data.message}</div>`;
-                        document.getElementById('loader-icon').classList.add('hidden');
-                        document.getElementById('download-box').classList.remove('hidden');
-                    }
-                }
-            } catch (e) { alert("Sync failed. Check API connection."); }
+    try {
+        // Yeh '/api/process' tabhi kaam karega jab aapki vercel.json sahi hogi
+        const res = await fetch('/api/process', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tool: toolName, prompt: promptVal })
+        });
+
+        if (!res.ok) throw new Error('Backend Link Broken');
+
+        const data = await res.json();
+        
+        if(data.status === "Success") {
+            credits--;
+            document.getElementById('credits-top').innerText = `SYNC: ${credits}/5 FREE`;
+            if(status) {
+                status.innerHTML = `<div class="bg-zinc-900 p-6 rounded-xl text-left font-mono text-[11px] leading-relaxed text-cyan-50">${data.message}</div>`;
+                document.getElementById('loader-icon').classList.add('hidden');
+                document.getElementById('download-box').classList.remove('hidden');
+            }
         }
+    } catch (e) {
+        if(status) status.innerText = "QUANTUM LINK ERROR: BACKEND IS INITIALIZING. TRY AGAIN IN 10 SECONDS.";
+        console.error(e);
+    }
+}
 
         function closeTool() { document.getElementById('workspace-ui').style.display = 'none'; }
         function popFlare(e) {
