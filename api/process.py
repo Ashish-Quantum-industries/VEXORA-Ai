@@ -1,36 +1,44 @@
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import google.generativeai as genai
+import sys
 
-# Ashish Quantum Industries Master Engine
 app = Flask(__name__)
 CORS(app)
 
 # VEXORA MASTER KEY
-genai.configure(api_key="AIzaSyC-0F-IweAYqFHjU46C7UpJyadCgs361tg")
-model = genai.GenerativeModel('gemini-1.5-pro')
+API_KEY = "AIzaSyC-0F-IweAYqFHjU46C7UpJyadCgs361tg"
 
-@app.route('/api/process', methods=['POST'])
+try:
+    genai.configure(api_key=API_KEY)
+    model = genai.GenerativeModel('gemini-1.5-pro')
+except Exception as e:
+    print(f"AI Setup Error: {e}")
+
+@app.route('/api/process', methods=['POST', 'OPTIONS'])
 def handle_ai():
+    if request.method == 'OPTIONS':
+        return '', 200
+        
     try:
-        # User se data lena
         data = request.get_json()
         if not data:
-            return jsonify({"status": "Error", "message": "No data received"}), 400
+            return jsonify({"status": "Error", "message": "Empty Data Packet"}), 400
             
         tool = data.get('tool', 'VEXORA AI')
-        prompt = data.get('prompt', '')
+        prompt = data.get('prompt', 'System check')
 
-        # Real AI Response from Gemini Pro
-        response = model.generate_content(f"Act as VEXORA AI by Ashish Quantum Industries. Tool: {tool}. User Prompt: {prompt}")
+        # Real AI Response
+        response = model.generate_content(f"Act as VEXORA AI. Tool: {tool}. Task: {prompt}. Professional output.")
         
         return jsonify({
             "status": "Success",
             "message": response.text
         })
     except Exception as e:
+        # Ye line error ko logs mein dikhayegi
+        print(f"Runtime Error: {str(e)}")
         return jsonify({"status": "Error", "message": str(e)}), 500
 
-# Vercel ko batane ke liye ki ye Flask app hai
+# Vercel entry point
 handler = app
